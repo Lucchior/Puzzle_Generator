@@ -19,177 +19,273 @@
     h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: #a78bfa; letter-spacing: -0.5px; }
     p.subtitle { color: #888; margin-bottom: 32px; font-size: 0.95rem; }
     .container { display: flex; gap: 32px; width: 100%; max-width: 1200px; flex-wrap: wrap; }
-    .panel { background: #16213e; border-radius: 16px; padding: 28px 24px; flex: 0 0 290px; box-shadow: 0 4px 32px #0005; }
+    .panel { background: #16213e; border-radius: 16px; padding: 28px 24px; flex: 0 0 300px; box-shadow: 0 4px 32px #0005; }
     .panel h2 { font-size: 1rem; font-weight: 600; color: #a78bfa; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
     .field { margin-bottom: 16px; }
     label { display: block; font-size: 0.82rem; color: #aaa; margin-bottom: 6px; font-weight: 500; }
-    input[type="number"] { width: 100%; background: #0f3460; border: 1.5px solid #2a2a5a; border-radius: 8px; color: #fff; font-size: 1rem; padding: 9px 12px; outline: none; transition: border 0.2s; }
+    .input-row { display: flex; align-items: center; gap: 8px; }
+    input[type="number"], input[type="range"] { background: #0f3460; border: 1.5px solid #2a2a5a; border-radius: 8px; color: #fff; font-size: 1rem; padding: 9px 12px; outline: none; transition: border 0.2s; }
+    input[type="number"] { width: 90px; }
     input[type="number"]:focus { border-color: #a78bfa; }
+    input[type="range"] { flex: 1; padding: 4px 8px; accent-color: #a78bfa; cursor: pointer; }
     .unit { font-size: 0.78rem; color: #666; margin-top: 3px; }
     .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; }
     .btn:active { transform: scale(0.97); }
-    .btn-preview { background: #a78bfa; color: #1a1a2e; margin-top: 20px; }
-    .btn-preview:hover { background: #c4b5fd; }
-    .btn-download { background: #10b981; color: #fff; }
+    .btn-download { background: #10b981; color: #fff; margin-top: 20px; }
     .btn-download:hover { background: #34d399; }
     .preview-area { flex: 1 1 500px; background: #16213e; border-radius: 16px; padding: 28px 24px; box-shadow: 0 4px 32px #0005; display: flex; flex-direction: column; }
     .preview-area h2 { font-size: 1rem; font-weight: 600; color: #a78bfa; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    #svg-container { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 10px; min-height: 380px; overflow: hidden; }
-    #svg-container svg { max-width: 100%; max-height: 540px; display: block; }
+    #svg-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 10px; min-height: 380px; overflow: hidden; padding: 12px; }
     .info-bar { margin-top: 12px; font-size: 0.82rem; color: #666; text-align: right; }
     .divider { height: 1px; background: #2a2a5a; margin: 16px 0; }
+    #puzzlecontainer path { vector-effect: non-scaling-stroke; }
   </style>
 </head>
 <body>
   <h1>🧩 Puzzle Line Generator</h1>
-  <p class="subtitle">Genera le linee del tuo puzzle con linguette a incastro e scarica il file SVG</p>
+  <p class="subtitle">Genera le linee del tuo puzzle con linguette realistiche e scarica il file SVG</p>
 
   <div class="container">
+    <!-- PANNELLO IMPOSTAZIONI -->
     <div class="panel">
       <h2>⚙️ Impostazioni</h2>
+
       <div class="field">
         <label>Larghezza (mm)</label>
-        <input type="number" id="width" value="200" min="10" max="2000" step="1"/>
+        <input type="number" id="width" value="300" min="10" max="2000" step="1" oninput="update()"/>
       </div>
       <div class="field">
         <label>Altezza (mm)</label>
-        <input type="number" id="height" value="150" min="10" max="2000" step="1"/>
+        <input type="number" id="height" value="200" min="10" max="2000" step="1" oninput="update()"/>
       </div>
+      <div class="field">
+        <label>Raggio angoli (mm)</label>
+        <input type="number" id="radius" value="2" min="0" max="20" step="0.5" oninput="update()"/>
+      </div>
+
       <div class="divider"></div>
+
       <div class="field">
-        <label>Pezzi orizzontali (colonne)</label>
-        <input type="number" id="cols" value="5" min="2" max="100" step="1"/>
+        <label>Colonne (pezzi orizzontali)</label>
+        <input type="number" id="xn" value="10" min="2" max="100" step="1" oninput="update()"/>
       </div>
       <div class="field">
-        <label>Pezzi verticali (righe)</label>
-        <input type="number" id="rows" value="4" min="2" max="100" step="1"/>
+        <label>Righe (pezzi verticali)</label>
+        <input type="number" id="yn" value="7" min="2" max="100" step="1" oninput="update()"/>
       </div>
+
       <div class="divider"></div>
+
       <div class="field">
-        <label>Spessore linea (mm)</label>
-        <input type="number" id="strokeWidth" value="0.5" min="0.1" max="10" step="0.1"/>
-        <div class="unit">Consigliato: 0.3–1 mm per taglio laser</div>
+        <label>Seed (forma casuale)</label>
+        <div class="input-row">
+          <input type="number" id="_seed" value="42" min="0" max="9999" step="1" oninput="update_seed()"/>
+          <input type="range" id="seed" value="42" min="0" max="9999" step="1" oninput="updateseed()"/>
+        </div>
       </div>
       <div class="field">
-        <label>Altezza linguetta (% del lato)</label>
-        <input type="number" id="tabSize" value="30" min="10" max="50" step="1"/>
-        <div class="unit">Consigliato: 25–35%</div>
+        <label>Dimensione linguetta</label>
+        <div class="input-row">
+          <input type="number" id="_tabsize" value="20" min="10" max="30" step="0.1" oninput="update_tabsize()"/>
+          <input type="range" id="tabsize" value="20" min="10" max="30" step="0.1" oninput="updatetabsize()"/>
+        </div>
+        <div class="unit">%  —  consigliato: 15–25%</div>
       </div>
-      <button class="btn btn-preview" onclick="generatePuzzle()">👁️ Genera Anteprima</button>
+      <div class="field">
+        <label>Irregolarità (jitter)</label>
+        <div class="input-row">
+          <input type="number" id="_jitter" value="4" min="0" max="13" step="0.1" oninput="update_jitter()"/>
+          <input type="range" id="jitter" value="4" min="0" max="13" step="0.1" oninput="updatejitter()"/>
+        </div>
+        <div class="unit">%  —  0 = pezzi simmetrici, 13 = molto irregolari</div>
+      </div>
+
       <div class="divider"></div>
-      <button class="btn btn-download" onclick="downloadSVG()">⬇️ Scarica SVG</button>
+
+      <div class="field">
+        <label>Spessore linea SVG (mm)</label>
+        <input type="number" id="strokeWidth" value="0.1" min="0.01" max="5" step="0.05" oninput="update()"/>
+        <div class="unit">Consigliato: 0.1 mm per taglio laser</div>
+      </div>
+
+      <button class="btn btn-download" onclick="generate()">⬇️ Scarica SVG</button>
     </div>
 
+    <!-- AREA ANTEPRIMA -->
     <div class="preview-area">
-      <h2>🔍 Anteprima</h2>
-      <div id="svg-container"></div>
+      <h2>🔍 Anteprima live</h2>
+      <div id="svg-wrapper">
+        <svg id="puzzlecontainer" xmlns="http://www.w3.org/2000/svg">
+          <path id="puzzlepath_h" fill="none" stroke="#1e40af" stroke-width="1"></path>
+          <path id="puzzlepath_v" fill="none" stroke="#991b1b" stroke-width="1"></path>
+          <path id="puzzlepath_b" fill="none" stroke="#111" stroke-width="1.2"></path>
+        </svg>
+      </div>
       <div class="info-bar" id="info-bar"></div>
     </div>
   </div>
 
 <script>
-var currentSVGContent = "";
-
-function r(v) { return Math.round(v * 1000) / 1000; }
-
-function pseudoRand(seed) {
-  var x = Math.sin(seed + 1) * 10000;
-  return x - Math.floor(x);
+function save(filename, data) {
+  var blob = new Blob([data], {type: "image/svg+xml"});
+  var elem = document.createElement('a');
+  elem.href = window.URL.createObjectURL(blob);
+  elem.download = filename;
+  document.body.appendChild(elem);
+  elem.click();
+  document.body.removeChild(elem);
 }
 
-function tabSegment(x1, y1, x2, y2, nx, ny, tabRatio, flip) {
-  var dx = x2 - x1, dy = y2 - y1;
-  var len = Math.sqrt(dx*dx + dy*dy);
-  var h = len * tabRatio * flip;
+var seedVal = 42;
+function random() { var x = Math.sin(seedVal) * 10000; seedVal += 1; return x - Math.floor(x); }
+function uniform(min, max) { return min + random() * (max - min); }
+function rbool() { return random() > 0.5; }
+function $(id) { return document.getElementById(id); }
 
-  var p0 = {x: x1, y: y1};
-  var p1 = {x: x1 + dx*0.3, y: y1 + dy*0.3};
-  var p2 = {x: x1 + dx*0.5, y: y1 + dy*0.5};
-  var p3 = {x: x1 + dx*0.7, y: y1 + dy*0.7};
-  var p4 = {x: x2, y: y2};
+function updateseed()    { $("_seed").value    = $("seed").value;            update(); }
+function updatetabsize() { $("_tabsize").value  = $("tabsize").value + "%";  update(); }
+function updatejitter()  { $("_jitter").value   = $("jitter").value + "%";   update(); }
+function update_seed()    { var v = parseFloat($("_seed").value);    if (!isNaN(v)) $("seed").value    = v; updateseed(); }
+function update_tabsize() { var v = parseFloat($("_tabsize").value); if (!isNaN(v)) $("tabsize").value  = v; updatetabsize(); }
+function update_jitter()  { var v = parseFloat($("_jitter").value);  if (!isNaN(v)) $("jitter").value   = v; updatejitter(); }
 
-  var t1 = {x: p1.x + nx*h, y: p1.y + ny*h};
-  var t2 = {x: p2.x + nx*h, y: p2.y + ny*h};
-  var t3 = {x: p3.x + nx*h, y: p3.y + ny*h};
+var a, b, c, d, e, t, j, flip, xi, yi, xn, yn, vertical, offset, width, height, radius;
 
-  var cp = h * 0.6;
-
-  return "M " + r(p0.x) + " " + r(p0.y) +
-    " C " + r(p0.x) + " " + r(p0.y) + " " + r(p1.x - nx*cp) + " " + r(p1.y - ny*cp) + " " + r(t1.x) + " " + r(t1.y) +
-    " C " + r(t1.x) + " " + r(t1.y) + " " + r(t2.x - dx*0.15) + " " + r(t2.y - dy*0.15) + " " + r(t2.x) + " " + r(t2.y) +
-    " C " + r(t2.x) + " " + r(t2.y) + " " + r(t3.x) + " " + r(t3.y) + " " + r(t3.x) + " " + r(t3.y) +
-    " C " + r(t3.x) + " " + r(t3.y) + " " + r(p4.x + nx*cp) + " " + r(p4.y + ny*cp) + " " + r(p4.x) + " " + r(p4.y);
+function first() { e = uniform(-j, j); next(); }
+function next() {
+  var fo = flip; flip = rbool();
+  a = (flip == fo ? -e : e);
+  b = uniform(-j, j); c = uniform(-j, j); d = uniform(-j, j); e = uniform(-j, j);
 }
 
-function generatePuzzle() {
-  var W = parseFloat(document.getElementById("width").value);
-  var H = parseFloat(document.getElementById("height").value);
-  var cols = parseInt(document.getElementById("cols").value);
-  var rows = parseInt(document.getElementById("rows").value);
-  var sw = parseFloat(document.getElementById("strokeWidth").value);
-  var tabPct = parseFloat(document.getElementById("tabSize").value) / 100;
+function sl() { return vertical ? height / yn : width / xn; }
+function sw() { return vertical ? width / xn  : height / yn; }
+function ol() { return offset + sl() * (vertical ? yi : xi); }
+function ow() { return offset + sw() * (vertical ? xi : yi); }
+function l(v) { return Math.round((ol() + sl() * v) * 100) / 100; }
+function w(v) { return Math.round((ow() + sw() * v * (flip ? -1.0 : 1.0)) * 100) / 100; }
 
-  if (!W || !H || !cols || !rows || !sw) { alert("Compila tutti i campi."); return; }
+function p0l(){return l(0.0);}  function p0w(){return w(0.0);}
+function p1l(){return l(0.2);}  function p1w(){return w(a);}
+function p2l(){return l(0.5+b+d);}  function p2w(){return w(-t+c);}
+function p3l(){return l(0.5-t+b);}  function p3w(){return w(t+c);}
+function p4l(){return l(0.5-2*t+b-d);}  function p4w(){return w(3*t+c);}
+function p5l(){return l(0.5+2*t+b-d);}  function p5w(){return w(3*t+c);}
+function p6l(){return l(0.5+t+b);}  function p6w(){return w(t+c);}
+function p7l(){return l(0.5+b+d);}  function p7w(){return w(-t+c);}
+function p8l(){return l(0.8);}  function p8w(){return w(e);}
+function p9l(){return l(1.0);}  function p9w(){return w(0.0);}
 
-  var cellW = W / cols;
-  var cellH = H / rows;
-  var strokeAttr = ' stroke="black" stroke-width="' + sw + '" fill="none"';
-  var paths = "";
+function parse_input() {
+  seedVal = parseInt($("seed").value);
+  t = parseFloat($("tabsize").value) / 200.0;
+  j = parseFloat($("jitter").value) / 100.0;
+  xn = parseInt($("xn").value);
+  yn = parseInt($("yn").value);
+}
 
-  // Bordo esterno
-  paths += '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="none" stroke="black" stroke-width="' + sw + '"/>\n';
-
-  // Linee verticali interne
-  for (var c = 1; c < cols; c++) {
-    var x = c * cellW;
-    for (var rr = 0; rr < rows; rr++) {
-      var y1 = rr * cellH, y2 = (rr+1) * cellH;
-      var flip = pseudoRand(c * 1000 + rr) > 0.5 ? 1 : -1;
-      var d = tabSegment(x, y1, x, y2, -1, 0, tabPct * 0.5, flip);
-      paths += '<path d="' + d + '"' + strokeAttr + '/>\n';
+function gen_dh() {
+  var str = ""; vertical = 0;
+  for (yi = 1; yi < yn; ++yi) {
+    xi = 0; first();
+    str += "M " + p0l() + "," + p0w() + " ";
+    for (; xi < xn; ++xi) {
+      str += "C " + p1l()+" "+p1w()+" "+p2l()+" "+p2w()+" "+p3l()+" "+p3w()+" ";
+      str += "C " + p4l()+" "+p4w()+" "+p5l()+" "+p5w()+" "+p6l()+" "+p6w()+" ";
+      str += "C " + p7l()+" "+p7w()+" "+p8l()+" "+p8w()+" "+p9l()+" "+p9w()+" ";
+      next();
     }
   }
+  return str;
+}
 
-  // Linee orizzontali interne
-  for (var row = 1; row < rows; row++) {
-    var y = row * cellH;
-    for (var cc = 0; cc < cols; cc++) {
-      var xa = cc * cellW, xb = (cc+1) * cellW;
-      var flip2 = pseudoRand(row * 10000 + cc) > 0.5 ? 1 : -1;
-      var d2 = tabSegment(xa, y, xb, y, 0, -1, tabPct * 0.5, flip2);
-      paths += '<path d="' + d2 + '"' + strokeAttr + '/>\n';
+function gen_dv() {
+  var str = ""; vertical = 1;
+  for (xi = 1; xi < xn; ++xi) {
+    yi = 0; first();
+    str += "M " + p0w() + "," + p0l() + " ";
+    for (; yi < yn; ++yi) {
+      str += "C " + p1w()+" "+p1l()+" "+p2w()+" "+p2l()+" "+p3w()+" "+p3l()+" ";
+      str += "C " + p4w()+" "+p4l()+" "+p5w()+" "+p5l()+" "+p6w()+" "+p6l()+" ";
+      str += "C " + p7w()+" "+p7l()+" "+p8w()+" "+p8l()+" "+p9w()+" "+p9l()+" ";
+      next();
     }
   }
-
-  currentSVGContent =
-    '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<svg xmlns="http://www.w3.org/2000/svg"\n' +
-    '     width="' + W + 'mm" height="' + H + 'mm"\n' +
-    '     viewBox="0 0 ' + W + ' ' + H + '">\n' +
-    paths + '</svg>';
-
-  document.getElementById("svg-container").innerHTML =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ' + W + ' ' + H + '" style="max-height:540px">' +
-    paths + '</svg>';
-
-  document.getElementById("info-bar").textContent =
-    "Totale pezzi: " + (cols*rows) +
-    " | Pezzo: " + cellW.toFixed(1) + " x " + cellH.toFixed(1) + " mm" +
-    " | Griglia: " + cols + " x " + rows;
+  return str;
 }
 
-function downloadSVG() {
-  if (!currentSVGContent) { alert("Genera prima un'anteprima!"); return; }
-  var blob = new Blob([currentSVGContent], { type: "image/svg+xml;charset=utf-8" });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url; a.download = "puzzle_lines.svg";
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+function gen_db() {
+  var str = "";
+  str += "M " + (offset+radius) + " " + offset + " ";
+  str += "L " + (offset+width-radius) + " " + offset + " ";
+  str += "A " + radius + " " + radius + " 0 0 1 " + (offset+width) + " " + (offset+radius) + " ";
+  str += "L " + (offset+width) + " " + (offset+height-radius) + " ";
+  str += "A " + radius + " " + radius + " 0 0 1 " + (offset+width-radius) + " " + (offset+height) + " ";
+  str += "L " + (offset+radius) + " " + (offset+height) + " ";
+  str += "A " + radius + " " + radius + " 0 0 1 " + offset + " " + (offset+height-radius) + " ";
+  str += "L " + offset + " " + (offset+radius) + " ";
+  str += "A " + radius + " " + radius + " 0 0 1 " + (offset+radius) + " " + offset + " ";
+  return str;
 }
 
-window.addEventListener("load", generatePuzzle);
+function update() {
+  width = parseInt($("width").value);
+  height = parseInt($("height").value);
+  radius = parseFloat($("radius").value);
+  var ratio = width / height;
+  var pw, ph;
+  if (ratio > 1.5) { pw = 900; ph = 900 / ratio; }
+  else             { ph = 600; pw = 600 * ratio;  }
+  var scale = pw / width;
+  var dispRadius = radius * scale;
+
+  offset = 5.5 * scale;
+  width  = pw; height = ph; radius = dispRadius;
+
+  $("puzzlecontainer").setAttribute("width",  pw + 11 * scale);
+  $("puzzlecontainer").setAttribute("height", ph + 11 * scale);
+  parse_input();
+
+  $("puzzlepath_h").setAttribute("d", gen_dh());
+  $("puzzlepath_v").setAttribute("d", gen_dv());
+  $("puzzlepath_b").setAttribute("d", gen_db());
+
+  var W = parseInt($("width_real") ? $("width_real").value : document.getElementById("width").value);
+  var cols = parseInt($("xn").value), rows = parseInt($("yn").value);
+  var cw = (parseInt(document.getElementById("width").value) / cols).toFixed(1);
+  var ch = (parseInt(document.getElementById("height").value) / rows).toFixed(1);
+  $("info-bar").textContent =
+    "Pezzi: " + (cols * rows) +
+    " | Pezzo: " + cw + " x " + ch + " mm" +
+    " | Griglia: " + cols + " x " + rows +
+    " | Seed: " + $("seed").value;
+}
+
+function generate() {
+  var W = parseInt($("width").value);
+  var H = parseInt($("height").value);
+  var sw = parseFloat($("strokeWidth").value);
+  radius = parseFloat($("radius").value);
+  offset = 0.0;
+  width = W; height = H;
+  parse_input();
+
+  var data = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  data += '<svg xmlns="http://www.w3.org/2000/svg" version="1.0" ';
+  data += 'width="' + W + 'mm" height="' + H + 'mm" viewBox="0 0 ' + W + ' ' + H + '">\n';
+  data += '<path fill="none" stroke="black" stroke-width="' + sw + '" d="' + gen_dh() + '"></path>\n';
+  data += '<path fill="none" stroke="black" stroke-width="' + sw + '" d="' + gen_dv() + '"></path>\n';
+  data += '<path fill="none" stroke="black" stroke-width="' + sw + '" d="' + gen_db() + '"></path>\n';
+  data += '</svg>';
+
+  save("puzzle_lines.svg", data);
+}
+
+window.addEventListener("load", function() {
+  $("seed").value = Math.floor(Math.random() * 9999);
+  $("_seed").value = $("seed").value;
+  update();
+});
 </script>
 </body>
 </html>
