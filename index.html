@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Puzzle Line Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; color: #a78bfa; letter-spacing: -0.5px; }
+    p.subtitle { color: #888; margin-bottom: 32px; font-size: 0.95rem; }
+    .container { display: flex; gap: 32px; width: 100%; max-width: 1200px; flex-wrap: wrap; }
+    .panel { background: #16213e; border-radius: 16px; padding: 28px 24px; flex: 0 0 290px; box-shadow: 0 4px 32px #0005; }
+    .panel h2 { font-size: 1rem; font-weight: 600; color: #a78bfa; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 0.82rem; color: #aaa; margin-bottom: 6px; font-weight: 500; }
+    input[type="number"] { width: 100%; background: #0f3460; border: 1.5px solid #2a2a5a; border-radius: 8px; color: #fff; font-size: 1rem; padding: 9px 12px; outline: none; transition: border 0.2s; }
+    input[type="number"]:focus { border-color: #a78bfa; }
+    .unit { font-size: 0.78rem; color: #666; margin-top: 3px; }
+    .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; }
+    .btn:active { transform: scale(0.97); }
+    .btn-preview { background: #a78bfa; color: #1a1a2e; margin-top: 20px; }
+    .btn-preview:hover { background: #c4b5fd; }
+    .btn-download { background: #10b981; color: #fff; }
+    .btn-download:hover { background: #34d399; }
+    .preview-area { flex: 1 1 500px; background: #16213e; border-radius: 16px; padding: 28px 24px; box-shadow: 0 4px 32px #0005; display: flex; flex-direction: column; }
+    .preview-area h2 { font-size: 1rem; font-weight: 600; color: #a78bfa; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    #svg-container { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 10px; min-height: 380px; overflow: hidden; }
+    #svg-container svg { max-width: 100%; max-height: 540px; display: block; }
+    .info-bar { margin-top: 12px; font-size: 0.82rem; color: #666; text-align: right; }
+    .divider { height: 1px; background: #2a2a5a; margin: 16px 0; }
+  </style>
+</head>
+<body>
+  <h1>🧩 Puzzle Line Generator</h1>
+  <p class="subtitle">Genera le linee del tuo puzzle con linguette a incastro e scarica il file SVG</p>
+
+  <div class="container">
+    <div class="panel">
+      <h2>⚙️ Impostazioni</h2>
+      <div class="field">
+        <label>Larghezza (mm)</label>
+        <input type="number" id="width" value="200" min="10" max="2000" step="1"/>
+      </div>
+      <div class="field">
+        <label>Altezza (mm)</label>
+        <input type="number" id="height" value="150" min="10" max="2000" step="1"/>
+      </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Pezzi orizzontali (colonne)</label>
+        <input type="number" id="cols" value="5" min="2" max="100" step="1"/>
+      </div>
+      <div class="field">
+        <label>Pezzi verticali (righe)</label>
+        <input type="number" id="rows" value="4" min="2" max="100" step="1"/>
+      </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Spessore linea (mm)</label>
+        <input type="number" id="strokeWidth" value="0.5" min="0.1" max="10" step="0.1"/>
+        <div class="unit">Consigliato: 0.3–1 mm per taglio laser</div>
+      </div>
+      <div class="field">
+        <label>Altezza linguetta (% del lato)</label>
+        <input type="number" id="tabSize" value="30" min="10" max="50" step="1"/>
+        <div class="unit">Consigliato: 25–35%</div>
+      </div>
+      <button class="btn btn-preview" onclick="generatePuzzle()">👁️ Genera Anteprima</button>
+      <div class="divider"></div>
+      <button class="btn btn-download" onclick="downloadSVG()">⬇️ Scarica SVG</button>
+    </div>
+
+    <div class="preview-area">
+      <h2>🔍 Anteprima</h2>
+      <div id="svg-container"></div>
+      <div class="info-bar" id="info-bar"></div>
+    </div>
+  </div>
+
+<script>
+var currentSVGContent = "";
+
+function r(v) { return Math.round(v * 1000) / 1000; }
+
+function pseudoRand(seed) {
+  var x = Math.sin(seed + 1) * 10000;
+  return x - Math.floor(x);
+}
+
+function tabSegment(x1, y1, x2, y2, nx, ny, tabRatio, flip) {
+  var dx = x2 - x1, dy = y2 - y1;
+  var len = Math.sqrt(dx*dx + dy*dy);
+  var h = len * tabRatio * flip;
+
+  var p0 = {x: x1, y: y1};
+  var p1 = {x: x1 + dx*0.3, y: y1 + dy*0.3};
+  var p2 = {x: x1 + dx*0.5, y: y1 + dy*0.5};
+  var p3 = {x: x1 + dx*0.7, y: y1 + dy*0.7};
+  var p4 = {x: x2, y: y2};
+
+  var t1 = {x: p1.x + nx*h, y: p1.y + ny*h};
+  var t2 = {x: p2.x + nx*h, y: p2.y + ny*h};
+  var t3 = {x: p3.x + nx*h, y: p3.y + ny*h};
+
+  var cp = h * 0.6;
+
+  return "M " + r(p0.x) + " " + r(p0.y) +
+    " C " + r(p0.x) + " " + r(p0.y) + " " + r(p1.x - nx*cp) + " " + r(p1.y - ny*cp) + " " + r(t1.x) + " " + r(t1.y) +
+    " C " + r(t1.x) + " " + r(t1.y) + " " + r(t2.x - dx*0.15) + " " + r(t2.y - dy*0.15) + " " + r(t2.x) + " " + r(t2.y) +
+    " C " + r(t2.x) + " " + r(t2.y) + " " + r(t3.x) + " " + r(t3.y) + " " + r(t3.x) + " " + r(t3.y) +
+    " C " + r(t3.x) + " " + r(t3.y) + " " + r(p4.x + nx*cp) + " " + r(p4.y + ny*cp) + " " + r(p4.x) + " " + r(p4.y);
+}
+
+function generatePuzzle() {
+  var W = parseFloat(document.getElementById("width").value);
+  var H = parseFloat(document.getElementById("height").value);
+  var cols = parseInt(document.getElementById("cols").value);
+  var rows = parseInt(document.getElementById("rows").value);
+  var sw = parseFloat(document.getElementById("strokeWidth").value);
+  var tabPct = parseFloat(document.getElementById("tabSize").value) / 100;
+
+  if (!W || !H || !cols || !rows || !sw) { alert("Compila tutti i campi."); return; }
+
+  var cellW = W / cols;
+  var cellH = H / rows;
+  var strokeAttr = ' stroke="black" stroke-width="' + sw + '" fill="none"';
+  var paths = "";
+
+  // Bordo esterno
+  paths += '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="none" stroke="black" stroke-width="' + sw + '"/>\n';
+
+  // Linee verticali interne
+  for (var c = 1; c < cols; c++) {
+    var x = c * cellW;
+    for (var rr = 0; rr < rows; rr++) {
+      var y1 = rr * cellH, y2 = (rr+1) * cellH;
+      var flip = pseudoRand(c * 1000 + rr) > 0.5 ? 1 : -1;
+      var d = tabSegment(x, y1, x, y2, -1, 0, tabPct * 0.5, flip);
+      paths += '<path d="' + d + '"' + strokeAttr + '/>\n';
+    }
+  }
+
+  // Linee orizzontali interne
+  for (var row = 1; row < rows; row++) {
+    var y = row * cellH;
+    for (var cc = 0; cc < cols; cc++) {
+      var xa = cc * cellW, xb = (cc+1) * cellW;
+      var flip2 = pseudoRand(row * 10000 + cc) > 0.5 ? 1 : -1;
+      var d2 = tabSegment(xa, y, xb, y, 0, -1, tabPct * 0.5, flip2);
+      paths += '<path d="' + d2 + '"' + strokeAttr + '/>\n';
+    }
+  }
+
+  currentSVGContent =
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<svg xmlns="http://www.w3.org/2000/svg"\n' +
+    '     width="' + W + 'mm" height="' + H + 'mm"\n' +
+    '     viewBox="0 0 ' + W + ' ' + H + '">\n' +
+    paths + '</svg>';
+
+  document.getElementById("svg-container").innerHTML =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ' + W + ' ' + H + '" style="max-height:540px">' +
+    paths + '</svg>';
+
+  document.getElementById("info-bar").textContent =
+    "Totale pezzi: " + (cols*rows) +
+    " | Pezzo: " + cellW.toFixed(1) + " x " + cellH.toFixed(1) + " mm" +
+    " | Griglia: " + cols + " x " + rows;
+}
+
+function downloadSVG() {
+  if (!currentSVGContent) { alert("Genera prima un'anteprima!"); return; }
+  var blob = new Blob([currentSVGContent], { type: "image/svg+xml;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "puzzle_lines.svg";
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+window.addEventListener("load", generatePuzzle);
+</script>
+</body>
+</html>
