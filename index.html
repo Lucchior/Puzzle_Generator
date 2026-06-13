@@ -46,11 +46,7 @@
       filter: drop-shadow(0 0 12px #a78bfa88);
       flex-shrink: 0;
     }
-    .hero-text {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .hero-text { display: flex; flex-direction: column; gap: 4px; }
     .hero-badge {
       display: inline-flex;
       align-items: center;
@@ -68,25 +64,10 @@
       margin-bottom: 6px;
     }
     .hero-badge::before { content: "★"; color: #f59e0b; }
-    .hero-name {
-      font-size: 1.9rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-    }
+    .hero-name { font-size: 1.9rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1.1; }
     .hero-name span { color: #a78bfa; }
-    .hero-sub {
-      font-size: 0.88rem;
-      color: #888;
-      margin-top: 6px;
-    }
-    .hero-links {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
+    .hero-sub { font-size: 0.88rem; color: #888; margin-top: 6px; }
+    .hero-links { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
     .hero-link {
       display: inline-flex;
       align-items: center;
@@ -99,24 +80,11 @@
       transition: transform 0.15s, filter 0.15s;
     }
     .hero-link:hover { transform: translateY(-2px); filter: brightness(1.15); }
-    .hero-link.offers {
-      background: linear-gradient(90deg, #f59e0b, #ef4444);
-      color: #fff;
-    }
-    .hero-link.maker {
-      background: #16213e;
-      border: 1px solid #a78bfa55;
-      color: #c4b5fd;
-    }
+    .hero-link.offers { background: linear-gradient(90deg, #f59e0b, #ef4444); color: #fff; }
+    .hero-link.maker  { background: #16213e; border: 1px solid #a78bfa55; color: #c4b5fd; }
 
     /* ───── TITOLO TOOL ───── */
-    .tool-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 32px;
-      padding: 0 16px;
-    }
+    .tool-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 32px; padding: 0 16px; }
     .tool-header h1 { font-size: 2rem; font-weight: 700; color: #a78bfa; letter-spacing: -0.5px; margin-bottom: 6px; }
     .tool-header p { color: #888; font-size: 0.95rem; }
 
@@ -132,32 +100,63 @@
     input[type="range"] { flex: 1; padding: 4px 8px; accent-color: #a78bfa; cursor: pointer; }
     .input-full input[type="number"] { width: 100%; }
     .unit { font-size: 0.78rem; color: #666; margin-top: 3px; }
+
+    /* ───── TOGGLE SWITCH ───── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f3460;
+      border: 1.5px solid #2a2a5a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .toggle-row:hover { border-color: #a78bfa; }
+    .toggle-row span { font-size: 0.88rem; color: #ccc; font-weight: 500; }
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0;
+      background: #2a2a5a;
+      border-radius: 22px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 16px; width: 16px;
+      left: 3px; bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    input:checked + .slider { background: #a78bfa; }
+    input:checked + .slider::before { transform: translateX(18px); }
+
     .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; }
     .btn:active { transform: scale(0.97); }
     .btn-download { background: linear-gradient(90deg, #10b981, #059669); color: #fff; margin-top: 20px; box-shadow: 0 4px 16px #10b98144; }
     .btn-download:hover { filter: brightness(1.1); }
+
     .preview-area { flex: 1 1 500px; background: #16213e; border-radius: 16px; padding: 28px 24px; box-shadow: 0 4px 32px #0005; display: flex; flex-direction: column; }
     .preview-area h2 { font-size: 1rem; font-weight: 600; color: #a78bfa; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
     #svg-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 10px; min-height: 380px; overflow: hidden; padding: 12px; }
     .info-bar { margin-top: 12px; font-size: 0.82rem; color: #666; text-align: right; }
     .divider { height: 1px; background: #2a2a5a; margin: 16px 0; }
     .legend { margin-top: 8px; font-size: 0.75rem; color: #555; display: flex; gap: 16px; padding: 0 4px; flex-wrap: wrap; }
-    #puzzlepath_margin { fill: none; stroke: #6366f1; stroke-width: 1.5; stroke-dasharray: 6 3; }
 
     /* ───── FOOTER ───── */
-    .footer {
-      margin-top: 48px;
-      text-align: center;
-      font-size: 0.78rem;
-      color: #444;
-    }
+    .footer { margin-top: 48px; text-align: center; font-size: 0.78rem; color: #444; }
     .footer a { color: #a78bfa; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-  <!-- HERO BANNER -->
+  <!-- HERO -->
   <div class="hero">
     <img class="hero-logo" src="https://i.postimg.cc/FFW3sjLV/Logo.png" alt="Anycubic Logo"/>
     <div class="hero-text">
@@ -165,23 +164,19 @@
       <div class="hero-name">Ludwing <span>Puzzle</span> Generator</div>
       <div class="hero-sub">Tool gratuito per creare file SVG di puzzle — taglio laser &amp; stampa 3D</div>
       <div class="hero-links">
-        <a class="hero-link offers" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank">
-          🔥 Offerte Anycubic aggiornate
-        </a>
-        <a class="hero-link maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank">
-          🛠️ Profilo Makeronline
-        </a>
+        <a class="hero-link offers" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank">🔥 Offerte Anycubic aggiornate</a>
+        <a class="hero-link maker"  href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank">🛠️ Profilo Makeronline</a>
       </div>
     </div>
   </div>
 
-  <!-- TITOLO TOOL -->
+  <!-- TITOLO -->
   <div class="tool-header">
     <h1>🧩 Puzzle Line Generator</h1>
     <p>Genera le linee del tuo puzzle con linguette realistiche e scarica il file SVG</p>
   </div>
 
-  <!-- CORPO PRINCIPALE -->
+  <!-- CORPO -->
   <div class="container">
     <div class="panel">
       <h2>⚙️ Impostazioni</h2>
@@ -204,7 +199,20 @@
       <div class="field input-full">
         <label>🔲 Margine bordo esterno (mm)</label>
         <input type="number" id="margin" value="5" min="0" max="100" step="0.5" oninput="update()"/>
-        <div class="unit">Spazio uniforme attorno alla griglia — utile per stampa 3D e laser</div>
+        <div class="unit">Spazio uniforme attorno alla griglia</div>
+      </div>
+
+      <!-- TOGGLE BORDO SOLIDO -->
+      <div class="field">
+        <label>Modalità bordo</label>
+        <label class="toggle-row" for="solidBorder">
+          <span>⬛ Bordo pieno nero solido<br><small style="color:#666;font-weight:400">Attiva per stampa 3D (fill nero)</small></span>
+          <label class="switch">
+            <input type="checkbox" id="solidBorder" onchange="update()"/>
+            <span class="slider"></span>
+          </label>
+        </label>
+        <div class="unit" id="border-hint">Disattivo: solo contorno tratteggiato</div>
       </div>
 
       <div class="divider"></div>
@@ -259,13 +267,14 @@
       <h2>🔍 Anteprima live</h2>
       <div id="svg-wrapper">
         <svg id="puzzlecontainer" xmlns="http://www.w3.org/2000/svg">
+          <path id="puzzlepath_margin_solid" ></path>
           <path id="puzzlepath_h"      fill="none" stroke="#1e40af" stroke-width="1"></path>
           <path id="puzzlepath_v"      fill="none" stroke="#991b1b" stroke-width="1"></path>
           <path id="puzzlepath_b"      fill="none" stroke="#111"    stroke-width="1.2"></path>
-          <path id="puzzlepath_margin"></path>
+          <path id="puzzlepath_margin" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="6 3"></path>
         </svg>
       </div>
-      <div class="legend">
+      <div class="legend" id="legend">
         <span>── <span style="color:#1e40af">linee orizzontali</span></span>
         <span>── <span style="color:#991b1b">linee verticali</span></span>
         <span>── <span style="color:#111">bordo puzzle</span></span>
@@ -286,13 +295,11 @@ function save(filename, data) {
   var elem = document.createElement('a');
   elem.href = window.URL.createObjectURL(blob);
   elem.download = filename;
-  document.body.appendChild(elem);
-  elem.click();
-  document.body.removeChild(elem);
+  document.body.appendChild(elem); elem.click(); document.body.removeChild(elem);
 }
 
 var seedVal = 42;
-function random()        { var x = Math.sin(seedVal)*10000; seedVal+=1; return x - Math.floor(x); }
+function random()        { var x = Math.sin(seedVal)*10000; seedVal+=1; return x-Math.floor(x); }
 function uniform(mn, mx) { return mn + random()*(mx-mn); }
 function rbool()         { return random() > 0.5; }
 function $(id)           { return document.getElementById(id); }
@@ -324,8 +331,8 @@ function p0l(){return l(0.0);}      function p0w(){return w(0.0);}
 function p1l(){return l(0.2);}      function p1w(){return w(a);}
 function p2l(){return l(0.5+b+d);}  function p2w(){return w(-t+c);}
 function p3l(){return l(0.5-t+b);}  function p3w(){return w(t+c);}
-function p4l(){return l(0.5-2*t+b-d);} function p4w(){return w(3*t+c);}
-function p5l(){return l(0.5+2*t+b-d);} function p5w(){return w(3*t+c);}
+function p4l(){return l(0.5-2*t+b-d);}  function p4w(){return w(3*t+c);}
+function p5l(){return l(0.5+2*t+b-d);}  function p5w(){return w(3*t+c);}
 function p6l(){return l(0.5+t+b);}  function p6w(){return w(t+c);}
 function p7l(){return l(0.5+b+d);}  function p7w(){return w(-t+c);}
 function p8l(){return l(0.8);}      function p8w(){return w(e);}
@@ -341,8 +348,7 @@ function parse_input() {
 
 function gen_dh() {
   var str=""; vertical=0;
-  for(yi=1;yi<yn;++yi){
-    xi=0; first();
+  for(yi=1;yi<yn;++yi){ xi=0; first();
     str+="M "+p0l()+","+p0w()+" ";
     for(;xi<xn;++xi){
       str+="C "+p1l()+" "+p1w()+" "+p2l()+" "+p2w()+" "+p3l()+" "+p3w()+" ";
@@ -356,8 +362,7 @@ function gen_dh() {
 
 function gen_dv() {
   var str=""; vertical=1;
-  for(xi=1;xi<xn;++xi){
-    yi=0; first();
+  for(xi=1;xi<xn;++xi){ yi=0; first();
     str+="M "+p0w()+","+p0l()+" ";
     for(;yi<yn;++yi){
       str+="C "+p1w()+" "+p1l()+" "+p2w()+" "+p2l()+" "+p3w()+" "+p3l()+" ";
@@ -369,34 +374,37 @@ function gen_dv() {
   return str;
 }
 
-function gen_db(off, w, h, r) {
-  var str="";
-  str+="M "+(off+r)+" "+off+" ";
-  str+="L "+(off+w-r)+" "+off+" ";
-  str+="A "+r+" "+r+" 0 0 1 "+(off+w)+" "+(off+r)+" ";
-  str+="L "+(off+w)+" "+(off+h-r)+" ";
-  str+="A "+r+" "+r+" 0 0 1 "+(off+w-r)+" "+(off+h)+" ";
-  str+="L "+(off+r)+" "+(off+h)+" ";
-  str+="A "+r+" "+r+" 0 0 1 "+off+" "+(off+h-r)+" ";
-  str+="L "+off+" "+(off+r)+" ";
-  str+="A "+r+" "+r+" 0 0 1 "+(off+r)+" "+off+" Z";
-  return str;
+// Genera il rettangolo arrotondato (bordo puzzle o margine)
+function gen_rect(x, y, w, h, r) {
+  if(r <= 0) return "M "+x+" "+y+" L "+(x+w)+" "+y+" L "+(x+w)+" "+(y+h)+" L "+x+" "+(y+h)+" Z";
+  return "M "+(x+r)+" "+y+
+    " L "+(x+w-r)+" "+y+
+    " A "+r+" "+r+" 0 0 1 "+(x+w)+" "+(y+r)+
+    " L "+(x+w)+" "+(y+h-r)+
+    " A "+r+" "+r+" 0 0 1 "+(x+w-r)+" "+(y+h)+
+    " L "+(x+r)+" "+(y+h)+
+    " A "+r+" "+r+" 0 0 1 "+x+" "+(y+h-r)+
+    " L "+x+" "+(y+r)+
+    " A "+r+" "+r+" 0 0 1 "+(x+r)+" "+y+" Z";
 }
 
-function gen_margin(off, w, h, mg, r) {
-  if(mg<=0) return "";
-  var x=off-mg, y=off-mg, W=w+mg*2, H=h+mg*2, R=r+mg;
-  var str="";
-  str+="M "+(x+R)+" "+y+" ";
-  str+="L "+(x+W-R)+" "+y+" ";
-  str+="A "+R+" "+R+" 0 0 1 "+(x+W)+" "+(y+R)+" ";
-  str+="L "+(x+W)+" "+(y+H-R)+" ";
-  str+="A "+R+" "+R+" 0 0 1 "+(x+W-R)+" "+(y+H)+" ";
-  str+="L "+(x+R)+" "+(y+H)+" ";
-  str+="A "+R+" "+R+" 0 0 1 "+x+" "+(y+H-R)+" ";
-  str+="L "+x+" "+(y+R)+" ";
-  str+="A "+R+" "+R+" 0 0 1 "+(x+R)+" "+y+" Z";
-  return str;
+// Bordo puzzle (inner rect)
+function gen_db(off, w, h, r) { return gen_rect(off, off, w, h, r); }
+
+// Margine esterno: usa even-odd rule per "anello" pieno tra margine e bordo puzzle
+// oppure solo il contorno esterno
+function gen_margin_outline(off, w, h, mg, r) {
+  if(mg <= 0) return "";
+  var R = r + mg;
+  return gen_rect(off - mg, off - mg, w + mg*2, h + mg*2, R);
+}
+
+// Anello pieno = rettangolo esterno + rettangolo interno (even-odd)
+function gen_margin_solid(off, w, h, mg, r) {
+  if(mg <= 0) return "";
+  var outer = gen_margin_outline(off, w, h, mg, r);
+  var inner = gen_db(off, w, h, r);
+  return outer + " " + inner; // combinati con fill-rule="evenodd" → anello pieno
 }
 
 function update() {
@@ -404,25 +412,46 @@ function update() {
   var H = parseInt($("height").value);
   var radiusMM = parseFloat($("radius").value);
   var marginMM = parseFloat($("margin").value) || 0;
+  var solid = $("solidBorder").checked;
+
+  // aggiorna hint testuale
+  $("border-hint").textContent = solid
+    ? "✅ Attivo: bordo pieno nero — ideale per stampa 3D"
+    : "Disattivo: solo contorno tratteggiato";
 
   var ratio = W/H;
   var pw, ph;
   if(ratio > 1.5){ pw=860; ph=860/ratio; } else { ph=560; pw=560*ratio; }
   var scale = pw/W;
 
-  var dispMargin = marginMM*scale;
-  var dispRadius = radiusMM*scale;
+  var dispMargin = marginMM * scale;
+  var dispRadius = radiusMM * scale;
   offset = dispMargin + 5.5*scale;
   width = pw; height = ph; radius = dispRadius;
 
-  $("puzzlecontainer").setAttribute("width",  pw+2*dispMargin+11*scale);
-  $("puzzlecontainer").setAttribute("height", ph+2*dispMargin+11*scale);
+  $("puzzlecontainer").setAttribute("width",  pw + 2*dispMargin + 11*scale);
+  $("puzzlecontainer").setAttribute("height", ph + 2*dispMargin + 11*scale);
 
   parse_input();
   $("puzzlepath_h").setAttribute("d", gen_dh());
   $("puzzlepath_v").setAttribute("d", gen_dv());
   $("puzzlepath_b").setAttribute("d", gen_db(offset, pw, ph, dispRadius));
-  $("puzzlepath_margin").setAttribute("d", gen_margin(offset, pw, ph, dispMargin, dispRadius));
+
+  if(solid && marginMM > 0) {
+    // anteprima: anello pieno nero con even-odd
+    $("puzzlepath_margin_solid").setAttribute("d", gen_margin_solid(offset, pw, ph, dispMargin, dispRadius));
+    $("puzzlepath_margin_solid").setAttribute("fill", "#111");
+    $("puzzlepath_margin_solid").setAttribute("fill-rule", "evenodd");
+    $("puzzlepath_margin_solid").setAttribute("stroke", "none");
+    $("puzzlepath_margin").setAttribute("d", "");
+  } else {
+    $("puzzlepath_margin_solid").setAttribute("d", "");
+    var outlineD = gen_margin_outline(offset, pw, ph, dispMargin, dispRadius);
+    $("puzzlepath_margin").setAttribute("d", outlineD);
+    $("puzzlepath_margin").setAttribute("fill", "none");
+    $("puzzlepath_margin").setAttribute("stroke", "#6366f1");
+    $("puzzlepath_margin").setAttribute("stroke-dasharray", "6 3");
+  }
 
   var cols=parseInt($("xn").value), rows=parseInt($("yn").value);
   var cw=(W/cols).toFixed(1), ch=(H/rows).toFixed(1);
@@ -432,26 +461,38 @@ function update() {
 }
 
 function generate() {
-  var W=parseInt($("width").value);
-  var H=parseInt($("height").value);
-  var sw=parseFloat($("strokeWidth").value);
-  var radiusMM=parseFloat($("radius").value);
-  var marginMM=parseFloat($("margin").value)||0;
-  var totW=W+marginMM*2, totH=H+marginMM*2;
+  var W = parseInt($("width").value);
+  var H = parseInt($("height").value);
+  var sw = parseFloat($("strokeWidth").value);
+  var radiusMM = parseFloat($("radius").value);
+  var marginMM = parseFloat($("margin").value) || 0;
+  var solid = $("solidBorder").checked;
+  var totW = W + marginMM*2, totH = H + marginMM*2;
 
-  radius=radiusMM; offset=marginMM; width=W; height=H;
+  radius = radiusMM; offset = marginMM; width = W; height = H;
   parse_input();
 
-  var data='<?xml version="1.0" encoding="UTF-8"?>\n';
-  data+='<svg xmlns="http://www.w3.org/2000/svg" ';
-  data+='width="'+totW+'mm" height="'+totH+'mm" viewBox="0 0 '+totW+' '+totH+'">\n';
-  data+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dh()+'"/>\n';
-  data+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dv()+'"/>\n';
-  data+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_db(offset,W,H,radiusMM)+'"/>\n';
-  if(marginMM>0){
-    data+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_margin(offset,W,H,marginMM,radiusMM)+'"/>\n';
+  var data = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  data += '<svg xmlns="http://www.w3.org/2000/svg" ';
+  data += 'width="'+totW+'mm" height="'+totH+'mm" viewBox="0 0 '+totW+' '+totH+'">\n';
+
+  if(marginMM > 0) {
+    if(solid) {
+      // Anello pieno nero con even-odd (esterno - interno)
+      var solidD = gen_margin_solid(offset, W, H, marginMM, radiusMM);
+      data += '<path fill="black" fill-rule="evenodd" stroke="none" d="'+solidD+'"/>\n';
+    } else {
+      // Solo contorno esterno
+      var outlineD = gen_margin_outline(offset, W, H, marginMM, radiusMM);
+      data += '<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+outlineD+'"/>\n';
+    }
   }
-  data+='</svg>';
+
+  data += '<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dh()+'"/>\n';
+  data += '<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dv()+'"/>\n';
+  data += '<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_db(offset,W,H,radiusMM)+'"/>\n';
+  data += '</svg>';
+
   save("puzzle_lines.svg", data);
 }
 
