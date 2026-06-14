@@ -102,22 +102,8 @@
     .preview-dots{display:flex;gap:6px;}
     .preview-dots span{width:10px;height:10px;border-radius:var(--r-full);}
 
-    /* ── FIX ANTEPRIMA RESPONSIVE ── */
-    #svg-wrapper {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#fff;
-      min-height:380px;
-      padding:var(--sp6);
-      overflow:hidden;
-    }
-    #puzzlecontainer {
-      display:block;
-      width:100%;
-      height:auto;
-      max-height:560px;
-    }
+    #svg-wrapper{display:flex;align-items:center;justify-content:center;background:#fff;min-height:380px;padding:var(--sp6);overflow:hidden;}
+    #puzzlecontainer{display:block;width:100%;height:auto;max-height:560px;}
 
     .meta-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp3);padding:var(--sp4) var(--sp6);border-top:1px solid var(--border);}
     .legend{display:flex;gap:var(--sp4);flex-wrap:wrap;}
@@ -132,15 +118,15 @@
     ::-webkit-scrollbar{width:6px;}
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
-    #puzzlepath_margin{fill:none;stroke:#6366f1;stroke-width:1.5;stroke-dasharray:6 3;}
+    #puzzlepath_margin{fill:none;stroke:#6366f1;stroke-dasharray:6 3;}
 
-    /* ── FRECCE INPUT NUMBER ── */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  opacity: 1;
-  filter: invert(45%) sepia(60%) saturate(600%) hue-rotate(220deg) brightness(110%);
-  cursor: pointer;
-}
+    /* ── FRECCE INPUT NUMBER VIOLA ── */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity:1;
+      filter:invert(45%) sepia(60%) saturate(600%) hue-rotate(220deg) brightness(110%);
+      cursor:pointer;
+    }
   </style>
 </head>
 <body>
@@ -274,10 +260,10 @@ input[type="number"]::-webkit-outer-spin-button {
       <div id="svg-wrapper">
         <svg id="puzzlecontainer" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
           <path id="puzzlepath_margin_solid"></path>
-          <path id="puzzlepath_h" fill="none" stroke="#3b82f6" stroke-width="1"></path>
-          <path id="puzzlepath_v" fill="none" stroke="#ef4444" stroke-width="1"></path>
-          <path id="puzzlepath_b" fill="none" stroke="#111" stroke-width="1.5"></path>
-          <path id="puzzlepath_margin" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="6 3"></path>
+          <path id="puzzlepath_h" fill="none" stroke="#3b82f6" stroke-width="0.1"></path>
+          <path id="puzzlepath_v" fill="none" stroke="#ef4444" stroke-width="0.1"></path>
+          <path id="puzzlepath_b" fill="none" stroke="#111" stroke-width="0.1"></path>
+          <path id="puzzlepath_margin" fill="none" stroke="#6366f1" stroke-width="0.1" stroke-dasharray="6 3"></path>
         </svg>
       </div>
       <div class="meta-bar">
@@ -409,17 +395,22 @@ function update(){
   var rMM=parseFloat($("radius").value),mMM=parseFloat($("margin").value)||0;
   var solid=$("solidBorder").checked,dict=i18n[currentLang];
   $("border-hint").textContent=dict[solid?"toggle-solid-on":"toggle-solid-hint"];
-
-  // usa coordinate reali in mm — il viewBox gestisce tutto il ridimensionamento
-  offset=mMM; width=W; height=H; radius=rMM;
-  var vW=W+mMM*2, vH=H+mMM*2;
+  offset=mMM;width=W;height=H;radius=rMM;
+  var vW=W+mMM*2,vH=H+mMM*2;
   $("puzzlecontainer").setAttribute("viewBox","0 0 "+vW+" "+vH);
+
+  // Aggiorna spessore linea in anteprima (in unità mm = coordinate viewBox)
+  var sw=parseFloat($("strokeWidth").value)||0.1;
+  $("puzzlepath_h").setAttribute("stroke-width",sw);
+  $("puzzlepath_v").setAttribute("stroke-width",sw);
+  $("puzzlepath_b").setAttribute("stroke-width",sw*1.5);
+  $("puzzlepath_margin").setAttribute("stroke-width",sw);
+  $("puzzlepath_margin").setAttribute("stroke-dasharray",(sw*6)+" "+(sw*3));
 
   parse_input();
   $("puzzlepath_h").setAttribute("d",gen_dh());
   $("puzzlepath_v").setAttribute("d",gen_dv());
   $("puzzlepath_b").setAttribute("d",gen_db(offset,W,H,rMM));
-
   if(solid&&mMM>0){
     $("puzzlepath_margin_solid").setAttribute("d",gen_margin_solid(offset,W,H,mMM,rMM));
     $("puzzlepath_margin_solid").setAttribute("fill","#111");
@@ -430,7 +421,6 @@ function update(){
     $("puzzlepath_margin_solid").setAttribute("d","");
     $("puzzlepath_margin").setAttribute("d",gen_margin_outline(offset,W,H,mMM,rMM));
   }
-
   var cols=parseInt($("xn").value),rows=parseInt($("yn").value);
   var cw=(W/cols).toFixed(1),ch=(H/rows).toFixed(1);
   var tW=(W+mMM*2).toFixed(1),tH=(H+mMM*2).toFixed(1);
@@ -442,8 +432,7 @@ function generate(){
   var sw=parseFloat($("strokeWidth").value),rMM=parseFloat($("radius").value);
   var mMM=parseFloat($("margin").value)||0,solid=$("solidBorder").checked;
   var tW=W+mMM*2,tH=H+mMM*2;
-  offset=mMM; width=W; height=H; radius=rMM;
-  parse_input();
+  offset=mMM;width=W;height=H;radius=rMM;parse_input();
   var s='<?xml version="1.0" encoding="UTF-8"?>\n';
   s+='<svg xmlns="http://www.w3.org/2000/svg" width="'+tW+'mm" height="'+tH+'mm" viewBox="0 0 '+tW+' '+tH+'">\n';
   if(mMM>0){
