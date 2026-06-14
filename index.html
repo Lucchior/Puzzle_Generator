@@ -2,6 +2,21 @@
 <html lang="it" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Sicurezza -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta http-equiv="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' https://i.postimg.cc data:;
+  connect-src 'none';
+  frame-ancestors 'none';
+  base-uri 'self';
+  form-action 'none';
+">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Puzzle SVG Generator — Ludwing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
