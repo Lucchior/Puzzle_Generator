@@ -53,6 +53,8 @@
     .chip:hover{transform:translateY(-1px);filter:brightness(1.15);}
     .chip-fire{background:linear-gradient(135deg,rgba(251,146,60,.15),rgba(239,68,68,.15));border:1px solid rgba(251,146,60,.25);color:#fb923c;}
     .chip-maker{background:var(--as);border:1px solid rgba(124,110,230,.2);color:var(--accent-h);}
+    .chip-paypal{background:linear-gradient(135deg,rgba(0,112,186,.15),rgba(0,60,120,.12));border:1px solid rgba(0,112,186,.35);color:#4fa8e0;}
+    .chip-paypal img{filter:brightness(0) saturate(100%) invert(55%) sepia(80%) saturate(400%) hue-rotate(180deg) brightness(110%);}
     .chip svg{width:13px;height:13px;}
 
     .lang-wrap{position:absolute;top:var(--sp5);right:var(--sp6);z-index:10;}
@@ -117,13 +119,8 @@
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
     #puzzlepath_margin{fill:none;stroke:#6366f1;stroke-dasharray:6 3;}
-
     input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      opacity:1;
-      filter:invert(45%) sepia(60%) saturate(600%) hue-rotate(220deg) brightness(110%);
-      cursor:pointer;
-    }
+    input[type="number"]::-webkit-outer-spin-button{opacity:1;filter:invert(45%) sepia(60%) saturate(600%) hue-rotate(220deg) brightness(110%);cursor:pointer;}
   </style>
 </head>
 <body>
@@ -151,8 +148,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span data-i18n="chip-maker">Profilo Makeronline</span>
       </a>
-      <a href='https://ko-fi.com/U1M121FVW3' target='_blank' rel="noopener" style="display:inline-flex;align-items:center;height:36px;">
-        <img height='36' style='border:0px;height:36px;display:block;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com'/>
+      <a class="chip chip-paypal" href="https://paypal.me/Lucchior" target="_blank" rel="noopener">
+        <img src="https://i.postimg.cc/C5pCbzXc/transparent-hd-paypal-logo-701751694777788ilpzr3lary.png" alt="PayPal" style="height:16px;width:auto;display:block;"/>
+        <span data-i18n="chip-paypal">Offrimi un caffè</span>
       </a>
     </div>
   </div>
@@ -290,7 +288,7 @@
 var i18n={
   it:{
     "hero-sub":"Tool gratuito per creare file SVG di puzzle con linguette realistiche — taglio laser & stampa 3D ready.",
-    "chip-offers":"Offerte Anycubic","chip-maker":"Profilo Makeronline",
+    "chip-offers":"Offerte Anycubic","chip-maker":"Profilo Makeronline","chip-paypal":"Offrimi un caffè",
     "tool-title":"Puzzle Line Generator",
     "tool-sub":"Configura la griglia, visualizza l'anteprima e scarica l'SVG pronto per il taglio",
     "sec-dimensions":"Dimensioni","sec-border":"Bordo esterno","sec-grid":"Griglia",
@@ -309,7 +307,7 @@ var i18n={
   },
   en:{
     "hero-sub":"Free tool to generate puzzle SVG files with realistic tabs — laser cutting & 3D printing ready.",
-    "chip-offers":"Anycubic Deals","chip-maker":"Makeronline Profile",
+    "chip-offers":"Anycubic Deals","chip-maker":"Makeronline Profile","chip-paypal":"Buy me a coffee",
     "tool-title":"Puzzle Line Generator",
     "tool-sub":"Set up the grid, preview the result and download the SVG ready for cutting",
     "sec-dimensions":"Dimensions","sec-border":"Outer border","sec-grid":"Grid",
