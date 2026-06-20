@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Puzzle SVG Generator — Ludwing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Sora:wght@300..700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-body:"Inter",system-ui,sans-serif;
+      --font-display:"Sora",system-ui,sans-serif;
+      --text-xs:clamp(0.75rem,.7rem + .25vw,.875rem);
+      --text-sm:clamp(0.875rem,.8rem + .35vw,1rem);
+      --text-base:clamp(1rem,.95rem + .25vw,1.125rem);
+      --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+      --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+      --sp1:.25rem;--sp2:.5rem;--sp3:.75rem;--sp4:1rem;
+      --sp5:1.25rem;--sp6:1.5rem;--sp8:2rem;--sp10:2.5rem;--sp12:3rem;
+      --r-sm:.375rem;--r-md:.5rem;--r-lg:.75rem;
+      --r-xl:1rem;--r-2xl:1.5rem;--r-full:9999px;
+      --ease:180ms cubic-bezier(0.16,1,0.3,1);
+    }
+    [data-theme="dark"]{
+      --bg:#0d0d0f;--surface:#131316;--s2:#18181c;--s3:#1e1e24;
+      --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+      --text:#e8e8ed;--muted:#8a8a96;--faint:#4a4a54;
+      --accent:#7c6ee6;--accent-h:#9182f0;
+      --ag:rgba(124,110,230,.18);--as:rgba(124,110,230,.10);
+      --green:#34d399;--green-h:#6ee7b7;--gg:rgba(52,211,153,.15);
+      --sh-md:0 4px 16px rgba(0,0,0,.5);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);font-size:var(--text-base);color:var(--text);background:var(--bg);min-height:100dvh;-webkit-font-smoothing:antialiased;}
+    img{display:block;max-width:100%;}
+    button{cursor:pointer;background:none;border:none;font:inherit;color:inherit;}
+    input{font:inherit;color:inherit;}
+    .hero{position:relative;overflow:hidden;padding:var(--sp8) var(--sp6) var(--sp10);display:flex;align-items:center;justify-content:center;gap:var(--sp8);flex-wrap:wrap;border-bottom:1px solid var(--border);}
+    .hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(124,110,230,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(52,211,153,.06) 0%,transparent 60%);}
+    .logo-ring{width:84px;height:84px;border-radius:var(--r-full);overflow:hidden;flex-shrink:0;border:2px solid var(--border2);box-shadow:0 0 0 6px var(--as),0 0 32px var(--ag),var(--sh-md);background:var(--s2);}
+    .logo-ring img{width:100%;height:100%;object-fit:cover;border-radius:var(--r-full);}
+    .hero-body{display:flex;flex-direction:column;gap:var(--sp3);max-width:520px;}
+    .badge{display:inline-flex;align-items:center;gap:var(--sp2);background:var(--as);border:1px solid rgba(124,110,230,.25);border-radius:var(--r-full);padding:3px 12px;font-family:var(--font-display);font-size:var(--text-xs);font-weight:600;color:var(--accent-h);letter-spacing:.06em;text-transform:uppercase;width:fit-content;}
+    .badge-dot{width:6px;height:6px;border-radius:var(--r-full);background:var(--accent);box-shadow:0 0 6px var(--accent);}
+    .hero-title{font-family:var(--font-display);font-size:var(--text-xl);font-weight:700;line-height:1.1;letter-spacing:-.02em;}
+    .hero-title em{font-style:normal;color:var(--accent-h);}
+    .hero-sub{font-size:var(--text-sm);color:var(--muted);line-height:1.6;}
+    .hero-links{display:flex;gap:var(--sp3);flex-wrap:wrap;margin-top:var(--sp2);align-items:center;}
+    .chip{display:inline-flex;align-items:center;gap:var(--sp2);padding:7px 14px;border-radius:var(--r-lg);font-size:var(--text-xs);font-weight:600;text-decoration:none;transition:all var(--ease);letter-spacing:.02em;}
+    .chip:hover{transform:translateY(-1px);filter:brightness(1.15);}
+    .chip-fire{background:linear-gradient(135deg,rgba(251,146,60,.15),rgba(239,68,68,.15));border:1px solid rgba(251,146,60,.25);color:#fb923c;}
+    .chip-maker{background:var(--as);border:1px solid rgba(124,110,230,.2);color:var(--accent-h);}
+    .chip svg{width:13px;height:13px;}
+    .lang-wrap{position:absolute;top:var(--sp5);right:var(--sp6);z-index:10;}
+    .lang-pill{position:relative;display:inline-flex;background:var(--s2);border:1px solid var(--border2);border-radius:var(--r-full);padding:4px;box-shadow:var(--sh-md);}
+    .lang-pill::before{content:"";position:absolute;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:var(--r-full);background:var(--accent);box-shadow:0 0 14px var(--ag);transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1);transform:translateX(0);}
+    .lang-pill[data-lang="en"]::before{transform:translateX(calc(100%));}
+    .lang-pill button{position:relative;z-index:1;padding:5px 16px;border-radius:var(--r-full);font-family:var(--font-display);font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;color:var(--faint);transition:color var(--ease);user-select:none;min-width:52px;text-align:center;}
+    .lang-pill button.active{color:#fff;}
+    .lang-pill button:not(.active):hover{color:var(--muted);}
+    .tool-header{text-align:center;padding:var(--sp8) var(--sp4) var(--sp6);}
+    .tool-header h1{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;letter-spacing:-.01em;}
+    .tool-header p{font-size:var(--text-sm);color:var(--muted);margin-top:var(--sp2);}
+    .workspace{display:flex;gap:var(--sp6);padding:0 var(--sp6) var(--sp12);max-width:1200px;margin:0 auto;flex-wrap:wrap;align-items:flex-start;}
+    .panel{flex:0 0 288px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);padding:var(--sp6);box-shadow:var(--sh-md);}
+    .section-label{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:var(--sp5);}
+    .field{margin-bottom:var(--sp4);}
+    .field label{display:block;font-size:var(--text-xs);font-weight:500;color:var(--muted);margin-bottom:var(--sp2);letter-spacing:.02em;}
+    .field input[type="number"]{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:var(--text-sm);font-weight:500;padding:9px 12px;outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
+    .field input[type="number"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--ag);}
+    .hint{font-size:var(--text-xs);color:var(--faint);margin-top:var(--sp1);}
+    .input-row{display:flex;align-items:center;gap:var(--sp3);}
+    .input-row input[type="number"]{width:80px;flex-shrink:0;}
+    .input-row input[type="range"]{flex:1;accent-color:var(--accent);cursor:pointer;height:4px;}
+    .sep{height:1px;background:var(--border);margin:var(--sp5) 0;}
+    .toggle-field{display:flex;align-items:center;justify-content:space-between;gap:var(--sp4);background:var(--s2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 14px;cursor:pointer;transition:border-color var(--ease);}
+    .toggle-field:hover{border-color:var(--border2);}
+    .toggle-text{flex:1;}
+    .toggle-text span{font-size:var(--text-sm);font-weight:500;color:var(--text);display:block;}
+    .toggle-text small{font-size:var(--text-xs);color:var(--muted);}
+    .switch{position:relative;display:inline-block;width:38px;height:20px;flex-shrink:0;}
+    .switch input{opacity:0;width:0;height:0;}
+    .slider{position:absolute;inset:0;background:var(--s3);border:1px solid var(--border2);border-radius:var(--r-full);transition:background var(--ease);}
+    .slider::before{content:"";position:absolute;height:14px;width:14px;left:2px;top:2px;background:var(--muted);border-radius:var(--r-full);transition:transform var(--ease),background var(--ease);}
+    .switch input:checked+.slider{background:var(--accent);border-color:var(--accent);}
+    .switch input:checked+.slider::before{transform:translateX(18px);background:#fff;}
+    .btn-dl{display:flex;align-items:center;justify-content:center;gap:var(--sp2);width:100%;padding:11px;border-radius:var(--r-lg);font-size:var(--text-sm);font-weight:600;letter-spacing:.02em;margin-top:var(--sp5);background:var(--green);color:#0a1a12;transition:all var(--ease);}
+    .btn-dl:hover{background:var(--green-h);box-shadow:0 0 24px var(--gg);transform:translateY(-1px);}
+    .btn-dl:active{transform:scale(.98);}
+    .btn-dl svg{width:16px;height:16px;}
+    .preview{flex:1 1 500px;display:flex;flex-direction:column;gap:var(--sp4);}
+    .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;box-shadow:var(--sh-md);}
+    .preview-topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp6);border-bottom:1px solid var(--border);}
+    .preview-title{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+    .preview-dots{display:flex;gap:6px;}
+    .preview-dots span{width:10px;height:10px;border-radius:var(--r-full);}
+    #svg-wrapper{display:flex;align-items:center;justify-content:center;background:#fff;min-height:380px;padding:var(--sp6);overflow:hidden;}
+    #puzzlecontainer{display:block;width:100%;height:auto;max-height:560px;}
+    .meta-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--sp3);padding:var(--sp4) var(--sp6);border-top:1px solid var(--border);}
+    .legend{display:flex;gap:var(--sp4);flex-wrap:wrap;}
+    .legend-item{display:flex;align-items:center;gap:var(--sp2);font-size:var(--text-xs);color:var(--faint);}
+    .legend-line{width:20px;height:2px;border-radius:1px;}
+    .legend-dash{width:20px;height:2px;background-image:repeating-linear-gradient(90deg,#6366f1 0,#6366f1 5px,transparent 5px,transparent 8px);}
+    .info-pill{font-size:var(--text-xs);color:var(--muted);background:var(--s2);border:1px solid var(--border);border-radius:var(--r-full);padding:4px 12px;}
+    footer{text-align:center;padding:var(--sp8) var(--sp4);border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--faint);}
+    footer a{color:var(--muted);text-decoration:none;transition:color var(--ease);}
+    footer a:hover{color:var(--accent-h);}
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+    #puzzlepath_margin{fill:none;stroke:#6366f1;stroke-dasharray:6 3;}
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button{opacity:1;filter:invert(45%) sepia(60%) saturate(600%) hue-rotate(220deg) brightness(110%);cursor:pointer;}
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="lang-wrap">
+    <div class="lang-pill" id="lang-pill" data-lang="it">
+      <button id="btn-ita" class="active" onclick="setLang('it')">ITA</button>
+      <button id="btn-eng" onclick="setLang('en')">ENG</button>
+    </div>
+  </div>
+  <div class="logo-ring">
+    <img src="https://i.postimg.cc/FFW3sjLV/Logo.png" alt="Anycubic Insider" width="84" height="84"/>
+  </div>
+  <div class="hero-body">
+    <div class="badge"><span class="badge-dot"></span>Anycubic Insider</div>
+    <h2 class="hero-title">Ludwing <em>Puzzle</em> Generator</h2>
+    <p class="hero-sub" data-i18n="hero-sub">Tool gratuito per creare file SVG di puzzle con linguette realistiche — taglio laser &amp; stampa 3D ready.</p>
+    <div class="hero-links">
+      <a class="chip chip-fire" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="chip-offers">Offerte Anycubic</span>
+      </a>
+      <a class="chip chip-maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span data-i18n="chip-maker">Profilo Makeronline</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="tool-header">
+  <h1 data-i18n="tool-title">Puzzle Line Generator</h1>
+  <p data-i18n="tool-sub">Configura la griglia, visualizza l'anteprima e scarica l'SVG pronto per il taglio</p>
+</div>
+
+<main class="workspace">
+  <aside class="panel">
+    <p class="section-label" data-i18n="sec-dimensions">Dimensioni</p>
+    <div class="field">
+      <label data-i18n="lbl-width">Larghezza (mm)</label>
+      <input type="number" id="width" value="300" min="10" max="2000" step="1" oninput="update()"/>
+    </div>
+    <div class="field">
+      <label data-i18n="lbl-height">Altezza (mm)</label>
+      <input type="number" id="height" value="200" min="10" max="2000" step="1" oninput="update()"/>
+    </div>
+    <div class="field">
+      <label data-i18n="lbl-radius">Raggio angoli (mm)</label>
+      <input type="number" id="radius" value="2" min="0" max="20" step="0.5" oninput="update()"/>
+    </div>
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-border">Bordo esterno</p>
+    <div class="field">
+      <label data-i18n="lbl-margin">Margine (mm)</label>
+      <input type="number" id="margin" value="5" min="0" max="100" step="0.5" oninput="update()"/>
+      <div class="hint" data-i18n="hint-margin">Spazio uniforme attorno alla griglia</div>
+    </div>
+    <div class="field">
+      <label class="toggle-field" for="solidBorder">
+        <div class="toggle-text">
+          <span data-i18n="toggle-solid">Bordo pieno nero</span>
+          <small id="border-hint" data-i18n="toggle-solid-hint">Per stampa 3D — fill solido</small>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="solidBorder" onchange="update()"/>
+          <span class="slider"></span>
+        </label>
+      </label>
+    </div>
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-grid">Griglia</p>
+    <div class="field">
+      <label data-i18n="lbl-cols">Colonne</label>
+      <input type="number" id="xn" value="10" min="2" max="100" step="1" oninput="update()"/>
+    </div>
+    <div class="field">
+      <label data-i18n="lbl-rows">Righe</label>
+      <input type="number" id="yn" value="7" min="2" max="100" step="1" oninput="update()"/>
+    </div>
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-tabs">Linguette</p>
+    <div class="field">
+      <label data-i18n="lbl-seed">Seed — forma casuale</label>
+      <div class="input-row">
+        <input type="number" id="_seed" value="42" min="0" max="9999" step="1" oninput="update_seed()"/>
+        <input type="range" id="seed" value="42" min="0" max="9999" step="1" oninput="updateseed()"/>
+      </div>
+    </div>
+    <div class="field">
+      <label data-i18n="lbl-tabsize">Dimensione linguetta</label>
+      <div class="input-row">
+        <input type="number" id="_tabsize" value="20" min="10" max="30" step="0.1" oninput="update_tabsize()"/>
+        <input type="range" id="tabsize" value="20" min="10" max="30" step="0.1" oninput="updatetabsize()"/>
+      </div>
+      <div class="hint" data-i18n="hint-tabsize">% — consigliato 15–25%</div>
+    </div>
+    <div class="field">
+      <label data-i18n="lbl-jitter">Irregolarità (jitter)</label>
+      <div class="input-row">
+        <input type="number" id="_jitter" value="4" min="0" max="13" step="0.1" oninput="update_jitter()"/>
+        <input type="range" id="jitter" value="4" min="0" max="13" step="0.1" oninput="updatejitter()"/>
+      </div>
+      <div class="hint" data-i18n="hint-jitter">0 = simmetrico · 13 = organico</div>
+    </div>
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-export">Esporta</p>
+    <div class="field">
+      <label data-i18n="lbl-stroke">Spessore linea SVG (mm)</label>
+      <input type="number" id="strokeWidth" value="0.1" min="0.01" max="5" step="0.05" oninput="update()"/>
+      <div class="hint" data-i18n="hint-stroke">0.1 mm — ottimale per laser</div>
+    </div>
+    <button class="btn-dl" onclick="generate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 3v13M5 16l7 7 7-7"/><path d="M3 21h18"/>
+      </svg>
+      <span data-i18n="btn-download">Scarica SVG</span>
+    </button>
+  </aside>
+
+  <section class="preview">
+    <div class="preview-card">
+      <div class="preview-topbar">
+        <span class="preview-title" data-i18n="preview-title">Anteprima live</span>
+        <div class="preview-dots">
+          <span style="background:#ef4444;opacity:.7"></span>
+          <span style="background:#f59e0b;opacity:.7"></span>
+          <span style="background:#22c55e;opacity:.7"></span>
+        </div>
+      </div>
+      <div id="svg-wrapper">
+        <svg id="puzzlecontainer" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <path id="puzzlepath_margin_solid"></path>
+          <path id="puzzlepath_h" fill="none" stroke="#3b82f6" stroke-width="0.1"></path>
+          <path id="puzzlepath_v" fill="none" stroke="#ef4444" stroke-width="0.1"></path>
+          <path id="puzzlepath_b" fill="none" stroke="#111" stroke-width="0.1"></path>
+          <path id="puzzlepath_margin" fill="none" stroke="#6366f1" stroke-width="0.1" stroke-dasharray="6 3"></path>
+        </svg>
+      </div>
+      <div class="meta-bar">
+        <div class="legend">
+          <div class="legend-item"><div class="legend-line" style="background:#3b82f6"></div><span data-i18n="leg-h">orizzontali</span></div>
+          <div class="legend-item"><div class="legend-line" style="background:#ef4444"></div><span data-i18n="leg-v">verticali</span></div>
+          <div class="legend-item"><div class="legend-line" style="background:#111;border:1px solid #aaa"></div><span data-i18n="leg-b">bordo puzzle</span></div>
+          <div class="legend-item"><div class="legend-dash"></div><span data-i18n="leg-m">margine</span></div>
+        </div>
+        <div class="info-pill" id="info-bar">—</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span data-i18n="footer-by">Creato da</span>
+  <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">Ludwing</a>
+  — Anycubic Insider &nbsp;·&nbsp;
+  <a href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener"><span data-i18n="footer-offers">Offerte Anycubic</span></a>
+  &nbsp;·&nbsp;
+  <span id="visit-counter" style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle;"></span>
+</footer>
+
+<script>
+var i18n={
+  it:{
+    "hero-sub":"Tool gratuito per creare file SVG di puzzle con linguette realistiche — taglio laser & stampa 3D ready.",
+    "chip-offers":"Offerte Anycubic","chip-maker":"Profilo Makeronline",
+    "tool-title":"Puzzle Line Generator",
+    "tool-sub":"Configura la griglia, visualizza l'anteprima e scarica l'SVG pronto per il taglio",
+    "sec-dimensions":"Dimensioni","sec-border":"Bordo esterno","sec-grid":"Griglia",
+    "sec-tabs":"Linguette","sec-export":"Esporta",
+    "lbl-width":"Larghezza (mm)","lbl-height":"Altezza (mm)","lbl-radius":"Raggio angoli (mm)",
+    "lbl-margin":"Margine (mm)","hint-margin":"Spazio uniforme attorno alla griglia",
+    "toggle-solid":"Bordo pieno nero","toggle-solid-hint":"Per stampa 3D — fill solido",
+    "toggle-solid-on":"Attivo — fill nero solido per slicer 3D",
+    "lbl-cols":"Colonne","lbl-rows":"Righe","lbl-seed":"Seed — forma casuale",
+    "lbl-tabsize":"Dimensione linguetta","hint-tabsize":"% — consigliato 15–25%",
+    "lbl-jitter":"Irregolarità (jitter)","hint-jitter":"0 = simmetrico · 13 = organico",
+    "lbl-stroke":"Spessore linea SVG (mm)","hint-stroke":"0.1 mm — ottimale per laser",
+    "btn-download":"Scarica SVG","preview-title":"Anteprima live",
+    "leg-h":"orizzontali","leg-v":"verticali","leg-b":"bordo puzzle","leg-m":"margine",
+    "footer-by":"Creato da","footer-offers":"Offerte Anycubic"
+  },
+  en:{
+    "hero-sub":"Free tool to generate puzzle SVG files with realistic tabs — laser cutting & 3D printing ready.",
+    "chip-offers":"Anycubic Deals","chip-maker":"Makeronline Profile",
+    "tool-title":"Puzzle Line Generator",
+    "tool-sub":"Set up the grid, preview the result and download the SVG ready for cutting",
+    "sec-dimensions":"Dimensions","sec-border":"Outer border","sec-grid":"Grid",
+    "sec-tabs":"Tabs","sec-export":"Export",
+    "lbl-width":"Width (mm)","lbl-height":"Height (mm)","lbl-radius":"Corner radius (mm)",
+    "lbl-margin":"Margin (mm)","hint-margin":"Uniform spacing around the grid",
+    "toggle-solid":"Solid black border","toggle-solid-hint":"For 3D printing — solid fill",
+    "toggle-solid-on":"Active — solid black fill for 3D slicer",
+    "lbl-cols":"Columns","lbl-rows":"Rows","lbl-seed":"Seed — random shape",
+    "lbl-tabsize":"Tab size","hint-tabsize":"% — recommended 15–25%",
+    "lbl-jitter":"Irregularity (jitter)","hint-jitter":"0 = symmetric · 13 = organic",
+    "lbl-stroke":"SVG stroke width (mm)","hint-stroke":"0.1 mm — optimal for laser",
+    "btn-download":"Download SVG","preview-title":"Live preview",
+    "leg-h":"horizontal","leg-v":"vertical","leg-b":"puzzle border","leg-m":"margin",
+    "footer-by":"Made by","footer-offers":"Anycubic Deals"
+  }
+};
+var currentLang="it";
+function setLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang;
+  document.getElementById("lang-pill").setAttribute("data-lang",lang);
+  document.getElementById("btn-ita").classList.toggle("active",lang==="it");
+  document.getElementById("btn-eng").classList.toggle("active",lang==="en");
+  var d=i18n[lang];
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    var k=el.getAttribute("data-i18n");
+    if(d[k]!==undefined) el.textContent=d[k];
+  });
+  var solid=document.getElementById("solidBorder").checked;
+  document.getElementById("border-hint").textContent=d[solid?"toggle-solid-on":"toggle-solid-hint"];
+  update();
+}
+function save(fn,data){
+  var blob=new Blob([data],{type:"image/svg+xml"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download=fn;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+var seedVal=42;
+function random(){var x=Math.sin(seedVal)*10000;seedVal+=1;return x-Math.floor(x);}
+function uniform(a,b){return a+random()*(b-a);}
+function rbool(){return random()>0.5;}
+function $(id){return document.getElementById(id);}
+function updateseed(){$("_seed").value=$("seed").value;update();}
+function updatetabsize(){$("_tabsize").value=$("tabsize").value;update();}
+function updatejitter(){$("_jitter").value=$("jitter").value;update();}
+function update_seed(){var v=parseFloat($("_seed").value);if(!isNaN(v))$("seed").value=v;updateseed();}
+function update_tabsize(){var v=parseFloat($("_tabsize").value);if(!isNaN(v))$("tabsize").value=v;updatetabsize();}
+function update_jitter(){var v=parseFloat($("_jitter").value);if(!isNaN(v))$("jitter").value=v;updatejitter();}
+var a,b,c,d,e,t,j,flip,xi,yi,xn,yn,vertical,offset,width,height,radius;
+function first(){e=uniform(-j,j);next();}
+function next(){var fo=flip;flip=rbool();a=(flip==fo?-e:e);b=uniform(-j,j);c=uniform(-j,j);d=uniform(-j,j);e=uniform(-j,j);}
+function sl(){return vertical?height/yn:width/xn;}
+function sw(){return vertical?width/xn:height/yn;}
+function ol(){return offset+sl()*(vertical?yi:xi);}
+function ow(){return offset+sw()*(vertical?xi:yi);}
+function l(v){return Math.round((ol()+sl()*v)*1000)/1000;}
+function w(v){return Math.round((ow()+sw()*v*(flip?-1:1))*1000)/1000;}
+function p0l(){return l(0.0);} function p0w(){return w(0.0);}
+function p1l(){return l(0.2);} function p1w(){return w(a);}
+function p2l(){return l(0.5+b+d);} function p2w(){return w(-t+c);}
+function p3l(){return l(0.5-t+b);} function p3w(){return w(t+c);}
+function p4l(){return l(0.5-2*t+b-d);} function p4w(){return w(3*t+c);}
+function p5l(){return l(0.5+2*t+b-d);} function p5w(){return w(3*t+c);}
+function p6l(){return l(0.5+t+b);} function p6w(){return w(t+c);}
+function p7l(){return l(0.5+b+d);} function p7w(){return w(-t+c);}
+function p8l(){return l(0.8);} function p8w(){return w(e);}
+function p9l(){return l(1.0);} function p9w(){return w(0.0);}
+function parse_input(){seedVal=parseInt($("seed").value);t=parseFloat($("tabsize").value)/200.0;j=parseFloat($("jitter").value)/100.0;xn=parseInt($("xn").value);yn=parseInt($("yn").value);}
+function gen_dh(){var s="";vertical=0;for(yi=1;yi<yn;++yi){xi=0;first();s+="M "+p0l()+","+p0w()+" ";for(;xi<xn;++xi){s+="C "+p1l()+" "+p1w()+" "+p2l()+" "+p2w()+" "+p3l()+" "+p3w()+" ";s+="C "+p4l()+" "+p4w()+" "+p5l()+" "+p5w()+" "+p6l()+" "+p6w()+" ";s+="C "+p7l()+" "+p7w()+" "+p8l()+" "+p8w()+" "+p9l()+" "+p9w()+" ";next();}}return s;}
+function gen_dv(){var s="";vertical=1;for(xi=1;xi<xn;++xi){yi=0;first();s+="M "+p0w()+","+p0l()+" ";for(;yi<yn;++yi){s+="C "+p1w()+" "+p1l()+" "+p2w()+" "+p2l()+" "+p3w()+" "+p3l()+" ";s+="C "+p4w()+" "+p4l()+" "+p5w()+" "+p5l()+" "+p6w()+" "+p6l()+" ";s+="C "+p7w()+" "+p7l()+" "+p8w()+" "+p8l()+" "+p9w()+" "+p9l()+" ";next();}}return s;}
+function gen_rect(x,y,w,h,r){if(r<=0)return"M "+x+" "+y+" L "+(x+w)+" "+y+" L "+(x+w)+" "+(y+h)+" L "+x+" "+(y+h)+" Z";return"M "+(x+r)+" "+y+" L "+(x+w-r)+" "+y+" A "+r+" "+r+" 0 0 1 "+(x+w)+" "+(y+r)+" L "+(x+w)+" "+(y+h-r)+" A "+r+" "+r+" 0 0 1 "+(x+w-r)+" "+(y+h)+" L "+(x+r)+" "+(y+h)+" A "+r+" "+r+" 0 0 1 "+x+" "+(y+h-r)+" L "+x+" "+(y+r)+" A "+r+" "+r+" 0 0 1 "+(x+r)+" "+y+" Z";}
+function gen_db(off,w,h,r){return gen_rect(off,off,w,h,r);}
+function gen_margin_outline(off,w,h,mg,r){if(mg<=0)return"";return gen_rect(off-mg,off-mg,w+mg*2,h+mg*2,r+mg);}
+function gen_margin_solid(off,w,h,mg,r){if(mg<=0)return"";return gen_margin_outline(off,w,h,mg,r)+" "+gen_db(off,w,h,r);}
+function update(){
+  var W=parseInt($("width").value),H=parseInt($("height").value);
+  var rMM=parseFloat($("radius").value),mMM=parseFloat($("margin").value)||0;
+  var solid=$("solidBorder").checked,dict=i18n[currentLang];
+  $("border-hint").textContent=dict[solid?"toggle-solid-on":"toggle-solid-hint"];
+  offset=mMM;width=W;height=H;radius=rMM;
+  var vW=W+mMM*2,vH=H+mMM*2;
+  $("puzzlecontainer").setAttribute("viewBox","0 0 "+vW+" "+vH);
+  var sw=parseFloat($("strokeWidth").value)||0.1;
+  $("puzzlepath_h").setAttribute("stroke-width",sw);
+  $("puzzlepath_v").setAttribute("stroke-width",sw);
+  $("puzzlepath_b").setAttribute("stroke-width",sw*1.5);
+  $("puzzlepath_margin").setAttribute("stroke-width",sw);
+  $("puzzlepath_margin").setAttribute("stroke-dasharray",(sw*6)+" "+(sw*3));
+  parse_input();
+  $("puzzlepath_h").setAttribute("d",gen_dh());
+  $("puzzlepath_v").setAttribute("d",gen_dv());
+  $("puzzlepath_b").setAttribute("d",gen_db(offset,W,H,rMM));
+  if(solid&&mMM>0){
+    $("puzzlepath_margin_solid").setAttribute("d",gen_margin_solid(offset,W,H,mMM,rMM));
+    $("puzzlepath_margin_solid").setAttribute("fill","#111");
+    $("puzzlepath_margin_solid").setAttribute("fill-rule","evenodd");
+    $("puzzlepath_margin_solid").setAttribute("stroke","none");
+    $("puzzlepath_margin").setAttribute("d","");
+  }else{
+    $("puzzlepath_margin_solid").setAttribute("d","");
+    $("puzzlepath_margin").setAttribute("d",gen_margin_outline(offset,W,H,mMM,rMM));
+  }
+  var cols=parseInt($("xn").value),rows=parseInt($("yn").value);
+  var cw=(W/cols).toFixed(1),ch=(H/rows).toFixed(1);
+  var tW=(W+mMM*2).toFixed(1),tH=(H+mMM*2).toFixed(1);
+  $("info-bar").textContent=cols*rows+" pz · "+cw+"x"+ch+" mm · SVG: "+tW+"x"+tH+" mm";
+}
+function generate(){
+  var W=parseInt($("width").value),H=parseInt($("height").value);
+  var sw=parseFloat($("strokeWidth").value),rMM=parseFloat($("radius").value);
+  var mMM=parseFloat($("margin").value)||0,solid=$("solidBorder").checked;
+  var tW=W+mMM*2,tH=H+mMM*2;
+  offset=mMM;width=W;height=H;radius=rMM;parse_input();
+  var s='<?xml version="1.0" encoding="UTF-8"?>\n';
+  s+='<svg xmlns="http://www.w3.org/2000/svg" width="'+tW+'mm" height="'+tH+'mm" viewBox="0 0 '+tW+' '+tH+'">\n';
+  if(mMM>0){
+    if(solid)s+='<path fill="black" fill-rule="evenodd" stroke="none" d="'+gen_margin_solid(offset,W,H,mMM,rMM)+'"/>\n';
+    else s+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_margin_outline(offset,W,H,mMM,rMM)+'"/>\n';
+  }
+  s+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dh()+'"/>\n';
+  s+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_dv()+'"/>\n';
+  s+='<path fill="none" stroke="black" stroke-width="'+sw+'" d="'+gen_db(offset,W,H,rMM)+'"/>\n';
+  s+='</svg>';
+  save("puzzle_lines.svg",s);
+}
+(function(){
+  var el=document.getElementById("visit-counter");
+  var img=new Image();
+  img.onload=function(){
+    el.innerHTML='<a href="https://hits.seeyoufarm.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;">'+
+      '<img src="'+img.src+'" alt="Visitors" style="height:18px;vertical-align:middle;border:0;"/>'+
+      '</a>';
+  };
+  img.onerror=function(){el.style.display="none";};
+  img.src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Flucchior.github.io%2FPuzzle_Generator%2F&count_bg=%230D0D10&title_bg=%238F81F0&icon=&icon_color=%23E7E7E7&title=Visitors%3A&edge_flat=false&t="+Date.now();
+})();
+window.addEventListener("load",function(){
+  $("seed").value=Math.floor(Math.random()*9999);
+  $("_seed").value=$("seed").value;
+  update();
+});
+</script>
+</body>
+</html>
