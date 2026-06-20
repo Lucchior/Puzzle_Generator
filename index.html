@@ -37,7 +37,6 @@
     img{display:block;max-width:100%;}
     button{cursor:pointer;background:none;border:none;font:inherit;color:inherit;}
     input{font:inherit;color:inherit;}
-
     .hero{position:relative;overflow:hidden;padding:var(--sp8) var(--sp6) var(--sp10);display:flex;align-items:center;justify-content:center;gap:var(--sp8);flex-wrap:wrap;border-bottom:1px solid var(--border);}
     .hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(124,110,230,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(52,211,153,.06) 0%,transparent 60%);}
     .logo-ring{width:84px;height:84px;border-radius:var(--r-full);overflow:hidden;flex-shrink:0;border:2px solid var(--border2);box-shadow:0 0 0 6px var(--as),0 0 32px var(--ag),var(--sh-md);background:var(--s2);}
@@ -53,10 +52,7 @@
     .chip:hover{transform:translateY(-1px);filter:brightness(1.15);}
     .chip-fire{background:linear-gradient(135deg,rgba(251,146,60,.15),rgba(239,68,68,.15));border:1px solid rgba(251,146,60,.25);color:#fb923c;}
     .chip-maker{background:var(--as);border:1px solid rgba(124,110,230,.2);color:var(--accent-h);}
-    .chip-paypal{background:linear-gradient(135deg,rgba(0,112,186,.15),rgba(0,60,120,.12));border:1px solid rgba(0,112,186,.35);color:#4fa8e0;}
-    .chip-paypal img{filter:brightness(0) saturate(100%) invert(55%) sepia(80%) saturate(400%) hue-rotate(180deg) brightness(110%);}
     .chip svg{width:13px;height:13px;}
-
     .lang-wrap{position:absolute;top:var(--sp5);right:var(--sp6);z-index:10;}
     .lang-pill{position:relative;display:inline-flex;background:var(--s2);border:1px solid var(--border2);border-radius:var(--r-full);padding:4px;box-shadow:var(--sh-md);}
     .lang-pill::before{content:"";position:absolute;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:var(--r-full);background:var(--accent);box-shadow:0 0 14px var(--ag);transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1);transform:translateX(0);}
@@ -64,11 +60,9 @@
     .lang-pill button{position:relative;z-index:1;padding:5px 16px;border-radius:var(--r-full);font-family:var(--font-display);font-size:var(--text-xs);font-weight:700;letter-spacing:.08em;color:var(--faint);transition:color var(--ease);user-select:none;min-width:52px;text-align:center;}
     .lang-pill button.active{color:#fff;}
     .lang-pill button:not(.active):hover{color:var(--muted);}
-
     .tool-header{text-align:center;padding:var(--sp8) var(--sp4) var(--sp6);}
     .tool-header h1{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;letter-spacing:-.01em;}
     .tool-header p{font-size:var(--text-sm);color:var(--muted);margin-top:var(--sp2);}
-
     .workspace{display:flex;gap:var(--sp6);padding:0 var(--sp6) var(--sp12);max-width:1200px;margin:0 auto;flex-wrap:wrap;align-items:flex-start;}
     .panel{flex:0 0 288px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);padding:var(--sp6);box-shadow:var(--sh-md);}
     .section-label{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:var(--sp5);}
@@ -96,7 +90,6 @@
     .btn-dl:hover{background:var(--green-h);box-shadow:0 0 24px var(--gg);transform:translateY(-1px);}
     .btn-dl:active{transform:scale(.98);}
     .btn-dl svg{width:16px;height:16px;}
-
     .preview{flex:1 1 500px;display:flex;flex-direction:column;gap:var(--sp4);}
     .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;box-shadow:var(--sh-md);}
     .preview-topbar{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp6);border-bottom:1px solid var(--border);}
@@ -111,7 +104,6 @@
     .legend-line{width:20px;height:2px;border-radius:1px;}
     .legend-dash{width:20px;height:2px;background-image:repeating-linear-gradient(90deg,#6366f1 0,#6366f1 5px,transparent 5px,transparent 8px);}
     .info-pill{font-size:var(--text-xs);color:var(--muted);background:var(--s2);border:1px solid var(--border);border-radius:var(--r-full);padding:4px 12px;}
-
     footer{text-align:center;padding:var(--sp8) var(--sp4);border-top:1px solid var(--border);font-size:var(--text-xs);color:var(--faint);}
     footer a{color:var(--muted);text-decoration:none;transition:color var(--ease);}
     footer a:hover{color:var(--accent-h);}
@@ -147,10 +139,6 @@
       <a class="chip chip-maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         <span data-i18n="chip-maker">Profilo Makeronline</span>
-      </a>
-      <a class="chip chip-paypal" href="https://paypal.me/Lucchior" target="_blank" rel="noopener">
-        <img src="https://i.postimg.cc/YCBcj3dr/Paypal-Logo.png" alt="PayPal" style="height:16px;width:auto;display:block;"/>
-        <span data-i18n="chip-paypal">Offrimi un caffè</span>
       </a>
     </div>
   </div>
@@ -282,13 +270,15 @@
   <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">Ludwing</a>
   — Anycubic Insider &nbsp;·&nbsp;
   <a href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener"><span data-i18n="footer-offers">Offerte Anycubic</span></a>
+  &nbsp;·&nbsp;
+  <span id="visit-counter" style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle;"></span>
 </footer>
 
 <script>
 var i18n={
   it:{
     "hero-sub":"Tool gratuito per creare file SVG di puzzle con linguette realistiche — taglio laser & stampa 3D ready.",
-    "chip-offers":"Offerte Anycubic","chip-maker":"Profilo Makeronline","chip-paypal":"Offrimi un caffè",
+    "chip-offers":"Offerte Anycubic","chip-maker":"Profilo Makeronline",
     "tool-title":"Puzzle Line Generator",
     "tool-sub":"Configura la griglia, visualizza l'anteprima e scarica l'SVG pronto per il taglio",
     "sec-dimensions":"Dimensioni","sec-border":"Bordo esterno","sec-grid":"Griglia",
@@ -307,7 +297,7 @@ var i18n={
   },
   en:{
     "hero-sub":"Free tool to generate puzzle SVG files with realistic tabs — laser cutting & 3D printing ready.",
-    "chip-offers":"Anycubic Deals","chip-maker":"Makeronline Profile","chip-paypal":"Buy me a coffee",
+    "chip-offers":"Anycubic Deals","chip-maker":"Makeronline Profile",
     "tool-title":"Puzzle Line Generator",
     "tool-sub":"Set up the grid, preview the result and download the SVG ready for cutting",
     "sec-dimensions":"Dimensions","sec-border":"Outer border","sec-grid":"Grid",
@@ -326,7 +316,6 @@ var i18n={
   }
 };
 var currentLang="it";
-
 function setLang(lang){
   currentLang=lang;
   document.documentElement.lang=lang;
@@ -342,7 +331,6 @@ function setLang(lang){
   document.getElementById("border-hint").textContent=d[solid?"toggle-solid-on":"toggle-solid-hint"];
   update();
 }
-
 function save(fn,data){
   var blob=new Blob([data],{type:"image/svg+xml"});
   var a=document.createElement("a");
@@ -360,7 +348,6 @@ function updatejitter(){$("_jitter").value=$("jitter").value;update();}
 function update_seed(){var v=parseFloat($("_seed").value);if(!isNaN(v))$("seed").value=v;updateseed();}
 function update_tabsize(){var v=parseFloat($("_tabsize").value);if(!isNaN(v))$("tabsize").value=v;updatetabsize();}
 function update_jitter(){var v=parseFloat($("_jitter").value);if(!isNaN(v))$("jitter").value=v;updatejitter();}
-
 var a,b,c,d,e,t,j,flip,xi,yi,xn,yn,vertical,offset,width,height,radius;
 function first(){e=uniform(-j,j);next();}
 function next(){var fo=flip;flip=rbool();a=(flip==fo?-e:e);b=uniform(-j,j);c=uniform(-j,j);d=uniform(-j,j);e=uniform(-j,j);}
@@ -387,7 +374,6 @@ function gen_rect(x,y,w,h,r){if(r<=0)return"M "+x+" "+y+" L "+(x+w)+" "+y+" L "+
 function gen_db(off,w,h,r){return gen_rect(off,off,w,h,r);}
 function gen_margin_outline(off,w,h,mg,r){if(mg<=0)return"";return gen_rect(off-mg,off-mg,w+mg*2,h+mg*2,r+mg);}
 function gen_margin_solid(off,w,h,mg,r){if(mg<=0)return"";return gen_margin_outline(off,w,h,mg,r)+" "+gen_db(off,w,h,r);}
-
 function update(){
   var W=parseInt($("width").value),H=parseInt($("height").value);
   var rMM=parseFloat($("radius").value),mMM=parseFloat($("margin").value)||0;
@@ -421,7 +407,6 @@ function update(){
   var tW=(W+mMM*2).toFixed(1),tH=(H+mMM*2).toFixed(1);
   $("info-bar").textContent=cols*rows+" pz · "+cw+"x"+ch+" mm · SVG: "+tW+"x"+tH+" mm";
 }
-
 function generate(){
   var W=parseInt($("width").value),H=parseInt($("height").value);
   var sw=parseFloat($("strokeWidth").value),rMM=parseFloat($("radius").value);
@@ -440,7 +425,17 @@ function generate(){
   s+='</svg>';
   save("puzzle_lines.svg",s);
 }
-
+(function(){
+  var el=document.getElementById("visit-counter");
+  var img=new Image();
+  img.onload=function(){
+    el.innerHTML='<a href="https://hits.seeyoufarm.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;">'+
+      '<img src="'+img.src+'" alt="Visitors" style="height:18px;vertical-align:middle;border:0;"/>'+
+      '</a>';
+  };
+  img.onerror=function(){el.style.display="none";};
+  img.src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Flucchior.github.io%2FPuzzle_Generator%2F&count_bg=%230D0D10&title_bg=%238F81F0&icon=&icon_color=%23E7E7E7&title=Visitors%3A&edge_flat=false&t="+Date.now();
+})();
 window.addEventListener("load",function(){
   $("seed").value=Math.floor(Math.random()*9999);
   $("_seed").value=$("seed").value;
