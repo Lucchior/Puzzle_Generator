@@ -2,9 +2,6 @@
 
 > A free, browser-based tool to generate fully customizable puzzle grid SVG files — ready for laser cutting and 3D printing.
 
-[
-[
-[
 
 
 
