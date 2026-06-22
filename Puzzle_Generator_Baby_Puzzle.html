@@ -292,11 +292,9 @@
   <aside class="panel">
     <div class="baby-badge"><span>🧸</span><span data-i18n="baby-title">Modalità Baby Puzzle</span></div>
     <p class="hint" style="margin-bottom:var(--sp5);" data-i18n="baby-desc">Forme irregolari, pezzi grandi, perfetti per i più piccoli.</p>
-
     <p class="section-label" data-i18n="baby-sec-pieces">Numero di pezzi</p>
     <div class="piece-grid" id="piece-grid"></div>
     <div class="hint" id="baby-piece-hint" style="margin-top:var(--sp2);margin-bottom:var(--sp5);"></div>
-
     <div class="sep"></div>
     <p class="section-label" data-i18n="baby-sec-size">Dimensioni foglio (mm)</p>
     <div class="field">
@@ -307,7 +305,6 @@
       <label data-i18n="lbl-height">Altezza (mm)</label>
       <input type="number" id="baby-height" value="200" min="50" max="600" step="10" oninput="babyUpdate()"/>
     </div>
-
     <div class="sep"></div>
     <p class="section-label" data-i18n="baby-sec-shape">Forma pezzi</p>
     <div class="field">
@@ -333,7 +330,6 @@
         <input type="range" id="baby-seed" value="7" min="0" max="9999" step="1" oninput="syncBabySeedR()"/>
       </div>
     </div>
-
     <div class="sep"></div>
     <p class="section-label" data-i18n="sec-export">Esporta</p>
     <div class="field">
@@ -347,7 +343,6 @@
       <span data-i18n="btn-download">Scarica SVG</span>
     </button>
   </aside>
-
   <section class="preview">
     <div class="preview-card">
       <div class="preview-topbar">
@@ -545,170 +540,129 @@ function generate(){
   save("puzzle_lines.svg",s);
 }
 
-// ════════════════════════════════
-//  BABY PUZZLE ENGINE
-// ════════════════════════════════
+// BABY PUZZLE ENGINE — fixed BSP cuts
 var BABY_PIECES=[3,4,5,6,7,8,9,10,12,15,16,20];
 var babySelectedPieces=6;
-var babySeedVal=7;
+var babySV=7;
 
-function babyRandom(){var x=Math.sin(babySeedVal)*10000;babySeedVal+=1;return x-Math.floor(x);}
-function babyUniform(a,b){return a+babyRandom()*(b-a);}
-function babyRbool(){return babyRandom()>0.5;}
+function bRnd(){var x=Math.sin(babySV)*10000;babySV+=1;return x-Math.floor(x);}
+function bUni(a,b){return a+bRnd()*(b-a);}
 
 function buildPieceGrid(){
-  var g=document.getElementById("piece-grid");
-  g.innerHTML="";
+  var g=document.getElementById("piece-grid");g.innerHTML="";
   BABY_PIECES.forEach(function(n){
-    var b=document.createElement("button");
-    b.className="piece-btn"+(n===babySelectedPieces?" active":"");
-    b.textContent=n+" pz";
-    b.onclick=function(){babySelectedPieces=n;buildPieceGrid();babyUpdate();};
-    g.appendChild(b);
+    var btn=document.createElement("button");
+    btn.className="piece-btn"+(n===babySelectedPieces?" active":"");
+    btn.textContent=n+" pz";
+    btn.onclick=function(){babySelectedPieces=n;buildPieceGrid();babyUpdate();};
+    g.appendChild(btn);
   });
 }
 
-function computeIrregularGrid(W, H, N, seed){
-  babySeedVal = seed;
-  var cells = [{x:0,y:0,w:W,h:H}];
-  var splits = N - 1;
-  for(var i=0;i<splits;i++){
+function bspCuts(W,H,N,seed){
+  babySV=seed;
+  var cells=[{x:0,y:0,w:W,h:H}];
+  var cuts=[];
+  for(var i=0;i<N-1;i++){
     cells.sort(function(a,b){return (b.w*b.h)-(a.w*a.h);});
-    var c = cells.shift();
-    var horiz = c.w < c.h ? true : c.w > c.h ? false : babyRandom()>0.5;
-    var ratio = 0.3 + babyRandom()*0.4;
+    var c=cells.shift();
+    var horiz=(c.w<c.h)?true:(c.w>c.h)?false:(bRnd()>0.5);
+    var ratio=0.3+bRnd()*0.4;
     if(horiz){
-      var cut = Math.round(c.h * ratio * 10)/10;
-      cells.push({x:c.x, y:c.y, w:c.w, h:cut});
-      cells.push({x:c.x, y:c.y+cut, w:c.w, h:c.h-cut});
+      var cy=c.y+Math.round(c.h*ratio*100)/100;
+      cells.push({x:c.x,y:c.y,w:c.w,h:cy-c.y});
+      cells.push({x:c.x,y:cy,w:c.w,h:(c.y+c.h)-cy});
+      cuts.push([c.x,cy,c.x+c.w,cy]);
     } else {
-      var cut2 = Math.round(c.w * ratio * 10)/10;
-      cells.push({x:c.x, y:c.y, w:cut2, h:c.h});
-      cells.push({x:c.x+cut2, y:c.y, w:c.w-cut2, h:c.h});
+      var cx=c.x+Math.round(c.w*ratio*100)/100;
+      cells.push({x:c.x,y:c.y,w:cx-c.x,h:c.h});
+      cells.push({x:cx,y:c.y,w:(c.x+c.w)-cx,h:c.h});
+      cuts.push([cx,c.y,cx,c.y+c.h]);
     }
   }
-  return cells;
+  return cuts;
 }
 
-function wavyEdge(x0,y0,x1,y1, tabSize, jitter, seed, flip){
-  babySeedVal = seed;
-  var dx=x1-x0, dy=y1-y0;
+function wavyEdge(x0,y0,x1,y1,tabSize,jitter,seed,flip){
+  babySV=seed;
+  var dx=x1-x0,dy=y1-y0;
   var len=Math.sqrt(dx*dx+dy*dy);
-  var nx=-dy/len, ny=dx/len;
-  var t=tabSize/200.0;
-  var j=jitter/100.0;
-  var fl=flip?1:-1;
-
-  var e=babyUniform(-j,j);
-  var a=e, b=babyUniform(-j,j), c2=babyUniform(-j,j), d=babyUniform(-j,j);
-  var e2=babyUniform(-j,j);
-
-  function pt(s, off){
-    return [(x0+dx*s)+nx*off*fl, (y0+dy*s)+ny*off*fl];
-  }
-
-  var sw=len;
-  var p0=pt(0,0);
-  var p1=pt(0.2, a*sw*0.05);
-  var p2=pt(0.5+b*0.1+d*0.1, (-t+c2)*sw*0.08);
-  var p3=pt(0.5-t*0.5+b*0.1, (t+c2)*sw*0.08);
-  var p4=pt(0.5-t+b*0.1-d*0.1, (3*t+c2)*sw*0.08);
-  var p5=pt(0.5+t+b*0.1-d*0.1, (3*t+c2)*sw*0.08);
-  var p6=pt(0.5+t*0.5+b*0.1, (t+c2)*sw*0.08);
-  var p7=pt(0.5+b*0.1+d*0.1, (-t+c2)*sw*0.08);
-  var p8=pt(0.8, e2*sw*0.05);
-  var p9=pt(1.0, 0);
-
-  function f(p){return Math.round(p[0]*100)/100+" "+Math.round(p[1]*100)/100;}
-  return "M "+f(p0)+" C "+f(p1)+" "+f(p2)+" "+f(p3)+" C "+f(p4)+" "+f(p5)+" "+f(p6)+" C "+f(p7)+" "+f(p8)+" "+f(p9);
+  var nx=-dy/len,ny=dx/len;
+  var t=tabSize/200.0,j=jitter/100.0,fl=flip?1:-1;
+  function rnd(){var x=Math.sin(babySV)*10000;babySV+=1;return x-Math.floor(x);}
+  function uni(a,b){return a+rnd()*(b-a);}
+  var b2=uni(-j,j),c2=uni(-j,j),d2=uni(-j,j);
+  function pt(s,off){return [Math.round(((x0+dx*s)+nx*off*fl)*100)/100,Math.round(((y0+dy*s)+ny*off*fl)*100)/100];}
+  function fp(p){return p[0]+" "+p[1];}
+  var p0=pt(0,0),p1=pt(0.15,0);
+  var p2=pt(0.35+b2*0.1,(-t+c2)*len*0.06);
+  var p3=pt(0.5-t*0.6+b2*0.08,(t+c2)*len*0.07);
+  var p4=pt(0.5-t+b2*0.06-d2*0.08,(3*t+c2*0.5)*len*0.07);
+  var p5=pt(0.5+t+b2*0.06-d2*0.08,(3*t+c2*0.5)*len*0.07);
+  var p6=pt(0.5+t*0.6+b2*0.08,(t+c2)*len*0.07);
+  var p7=pt(0.65+b2*0.1,(-t+c2)*len*0.06);
+  var p8=pt(0.85,0);
+  var p9=pt(1.0,0);
+  return "M "+fp(p0)+" C "+fp(p1)+" "+fp(p2)+" "+fp(p3)+" C "+fp(p4)+" "+fp(p5)+" "+fp(p6)+" C "+fp(p7)+" "+fp(p8)+" "+fp(p9);
 }
 
-function buildBabySVG(W, H, cells, tabSize, jitter, masterSeed, strokeW, forExport){
-  var borderColor = forExport?"black":"#111";
-  var cutColor = forExport?"black":"#7c6ee6";
-  var seen={};
-  function edgeKey(x0,y0,x1,y1){
-    if(x0>x1||(x0===x1&&y0>y1)) return x1+","+y1+","+x0+","+y0;
-    return x0+","+y0+","+x1+","+y1;
-  }
-  cells.forEach(function(c){
-    var edges4=[
-      [c.x,c.y, c.x+c.w,c.y],
-      [c.x+c.w,c.y, c.x+c.w,c.y+c.h],
-      [c.x,c.y+c.h, c.x+c.w,c.y+c.h],
-      [c.x,c.y, c.x,c.y+c.h]
-    ];
-    edges4.forEach(function(e){
-      var k=edgeKey(e[0],e[1],e[2],e[3]);
-      if(seen[k]) seen[k].internal=true;
-      else seen[k]={pts:e,internal:false};
-    });
-  });
-
+function buildBabySVG(W,H,cuts,tabSize,jitter,masterSeed,strokeW,forExport){
+  var bc=forExport?"black":"#111";
+  var cc=forExport?"black":"#7c6ee6";
   var borderD="M 0 0 L "+W+" 0 L "+W+" "+H+" L 0 "+H+" Z";
   var cutD="";
-  var si=masterSeed+100;
-  Object.keys(seen).forEach(function(k){
-    var ed=seen[k];
-    if(!ed.internal) return;
-    si+=17;
-    var flip=si%2===0;
-    cutD+=wavyEdge(ed.pts[0],ed.pts[1],ed.pts[2],ed.pts[3],tabSize,jitter,si,flip)+" ";
+  cuts.forEach(function(cut,i){
+    var s=masterSeed+100+i*31;
+    var flip=(i%2===0);
+    cutD+=wavyEdge(cut[0],cut[1],cut[2],cut[3],tabSize,jitter,s,flip)+" ";
   });
-
-  var out="";
-  out+='<path fill="none" stroke="'+borderColor+'" stroke-width="'+(strokeW*2)+'" stroke-linejoin="round" d="'+borderD+'"/>\n';
-  out+='<path fill="none" stroke="'+cutColor+'" stroke-width="'+strokeW+'" d="'+cutD+'"/>\n';
-  return out;
+  return '<path fill="none" stroke="'+bc+'" stroke-width="'+(strokeW*2)+'" d="'+borderD+'"/>\n' +
+         '<path fill="none" stroke="'+cc+'" stroke-width="'+strokeW+'" d="'+cutD+'"/>\n';
 }
 
-function babyGetParams(){
+function babyParams(){
   return {
-    W: parseInt(document.getElementById("baby-width").value)||300,
-    H: parseInt(document.getElementById("baby-height").value)||200,
-    tab: parseFloat(document.getElementById("baby-tab").value)||28,
-    jitter: parseFloat(document.getElementById("baby-jitter").value)||9,
-    seed: parseInt(document.getElementById("baby-seed").value)||7,
-    stroke: parseFloat(document.getElementById("baby-stroke").value)||0.1
+    W:parseInt(document.getElementById("baby-width").value)||300,
+    H:parseInt(document.getElementById("baby-height").value)||200,
+    tab:parseFloat(document.getElementById("baby-tab").value)||28,
+    jitter:parseFloat(document.getElementById("baby-jitter").value)||9,
+    seed:parseInt(document.getElementById("baby-seed").value)||7,
+    stroke:parseFloat(document.getElementById("baby-stroke").value)||0.1
   };
 }
 
 function babyUpdate(){
-  var p=babyGetParams();
-  var cells=computeIrregularGrid(p.W, p.H, babySelectedPieces, p.seed);
-  var inner=buildBabySVG(p.W, p.H, cells, p.tab, p.jitter, p.seed, p.stroke, false);
+  var p=babyParams();
+  var cuts=bspCuts(p.W,p.H,babySelectedPieces,p.seed);
+  var inner=buildBabySVG(p.W,p.H,cuts,p.tab,p.jitter,p.seed,p.stroke,false);
   var svg=document.getElementById("baby-container");
   svg.setAttribute("viewBox","0 0 "+p.W+" "+p.H);
   svg.innerHTML=inner;
   document.getElementById("baby-info-bar").textContent=babySelectedPieces+" pz · "+p.W+"×"+p.H+" mm";
-  var avgArea=Math.round(p.W*p.H/babySelectedPieces/100)/10;
-  document.getElementById("baby-piece-hint").textContent="~"+avgArea+" cm² per pezzo";
+  document.getElementById("baby-piece-hint").textContent="~"+Math.round(p.W*p.H/babySelectedPieces/100)/10+" cm² per pezzo";
 }
 
 function babyGenerate(){
-  var p=babyGetParams();
-  var cells=computeIrregularGrid(p.W, p.H, babySelectedPieces, p.seed);
-  var inner=buildBabySVG(p.W, p.H, cells, p.tab, p.jitter, p.seed, p.stroke, true);
-  var s='<?xml version="1.0" encoding="UTF-8"?>\n';
-  s+='<svg xmlns="http://www.w3.org/2000/svg" width="'+p.W+'mm" height="'+p.H+'mm" viewBox="0 0 '+p.W+' '+p.H+'">\n';
-  s+=inner;
-  s+='</svg>';
+  var p=babyParams();
+  var cuts=bspCuts(p.W,p.H,babySelectedPieces,p.seed);
+  var inner=buildBabySVG(p.W,p.H,cuts,p.tab,p.jitter,p.seed,p.stroke,true);
+  var s='<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="'+p.W+'mm" height="'+p.H+'mm" viewBox="0 0 '+p.W+' '+p.H+'">\n'+inner+'</svg>';
   save("baby_puzzle.svg",s);
 }
 
-function syncBabyTab(){var v=parseFloat(document.getElementById("_baby-tab").value);if(!isNaN(v)){document.getElementById("baby-tab").value=v;}babyUpdate();}
+function syncBabyTab(){var v=parseFloat(document.getElementById("_baby-tab").value);if(!isNaN(v))document.getElementById("baby-tab").value=v;babyUpdate();}
 function syncBabyTabR(){document.getElementById("_baby-tab").value=document.getElementById("baby-tab").value;babyUpdate();}
-function syncBabyJitter(){var v=parseFloat(document.getElementById("_baby-jitter").value);if(!isNaN(v)){document.getElementById("baby-jitter").value=v;}babyUpdate();}
+function syncBabyJitter(){var v=parseFloat(document.getElementById("_baby-jitter").value);if(!isNaN(v))document.getElementById("baby-jitter").value=v;babyUpdate();}
 function syncBabyJitterR(){document.getElementById("_baby-jitter").value=document.getElementById("baby-jitter").value;babyUpdate();}
-function syncBabySeed(){var v=parseInt(document.getElementById("_baby-seed").value);if(!isNaN(v)){document.getElementById("baby-seed").value=v;}babyUpdate();}
+function syncBabySeed(){var v=parseInt(document.getElementById("_baby-seed").value);if(!isNaN(v))document.getElementById("baby-seed").value=v;babyUpdate();}
 function syncBabySeedR(){document.getElementById("_baby-seed").value=document.getElementById("baby-seed").value;babyUpdate();}
 
-function switchTab(tab){
-  document.getElementById("tab-standard").style.display = tab==="standard"?"block":"none";
-  document.getElementById("tab-baby").style.display = tab==="baby"?"flex":"none";
-  document.getElementById("tbtn-standard").classList.toggle("active", tab==="standard");
-  document.getElementById("tbtn-baby").classList.toggle("active", tab==="baby");
-  if(tab==="baby") babyUpdate();
+function switchTab(t){
+  document.getElementById("tab-standard").style.display=t==="standard"?"block":"none";
+  document.getElementById("tab-baby").style.display=t==="baby"?"flex":"none";
+  document.getElementById("tbtn-standard").classList.toggle("active",t==="standard");
+  document.getElementById("tbtn-baby").classList.toggle("active",t==="baby");
+  if(t==="baby") babyUpdate();
 }
 
 window.addEventListener("load",function(){
