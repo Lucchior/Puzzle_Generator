@@ -1,0 +1,18 @@
+{
+  "name": "ludwing-svg-tools",
+  "version": "2.0.0",
+  "description": "Two free, browser-based SVG generators for makers: puzzle grids and clock faces, ready for laser cutting and 3D printing.",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/random.test.js test/geometry.test.js test/clock-geometry.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "homepage": "https://lucchior.github.io/Puzzle_Generator/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucchior/Puzzle_Generator.git"
+  }
+}

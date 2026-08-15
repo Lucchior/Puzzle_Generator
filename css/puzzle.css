@@ -1,0 +1,43 @@
+/* ============================================================================
+   puzzle.css — solo ciò che è specifico del generatore di puzzle.
+   Tutto il resto (token, temi, pannelli, campi, switch, pulsanti, anteprima)
+   arriva da base.css, caricato prima di questo file.
+   ========================================================================== */
+
+/* Colonna dei controlli: pannello unico e stretto. */
+.panel-puzzle { flex: 0 0 300px; }
+
+/* Anteprima: la tela resta bianca in entrambi i temi, perché rappresenta
+   il foglio reale su cui si taglia/stampa. */
+#svg-wrapper { min-height: 380px; }
+#puzzlecontainer { display: block; width: 100%; height: auto; max-height: 560px; }
+
+/* Il tratteggio del margine viene ridisegnato via JS in base allo spessore
+   linea scelto: qui definiamo solo fill e colore. */
+#puzzlepath_margin { fill: none; stroke: #6366f1; }
+
+.meta-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--sp3);
+  padding: var(--sp4) var(--sp6);
+  border-top: 1px solid var(--border);
+}
+.legend { display: flex; gap: var(--sp4); flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: var(--sp2); font-size: var(--text-xs); color: var(--faint); }
+.legend-line { width: 20px; height: 2px; border-radius: 1px; }
+.legend-dash {
+  width: 20px; height: 2px;
+  background-image: repeating-linear-gradient(90deg, #6366f1 0, #6366f1 5px, transparent 5px, transparent 8px);
+}
+
+/* Nota sulla privacy della foto caricata: deve restare leggibile ma
+   defilata rispetto ai controlli veri e propri. */
+.disclaimer {
+  font-size: var(--text-xs); line-height: 1.5; color: var(--muted);
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 10px 12px; margin-top: var(--sp2);
+}
+
+@media (max-width: 900px) {
+  .panel-puzzle { flex: 1 1 100%; }
+}

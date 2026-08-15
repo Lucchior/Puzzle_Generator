@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Generatore di quadranti d'orologio SVG — Ludwing SVG Tools</title>
+<meta name="description" content="Crea quadranti d'orologio personalizzati ed esporta ogni livello in SVG: quadrante, indici e lancette, pronti per taglio laser e stampa 3D."/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c6ee6'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2'/%3E%3Cpath d='M16 11v5l3.5 2' stroke='white' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Sora:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/clock.css">
+<script src="js/shared/i18n.js"></script>
+<script src="js/shared/site.js"></script>
+</head>
+<body data-page="clock">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-logo" data-fallback-hide>
+      <img src="https://i.postimg.cc/FFW3sjLV/Logo.png" alt="" width="34" height="34"/>
+    </span>
+    <span class="brand-text">Ludwing <em>SVG Tools</em></span>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html" data-nav="home" data-i18n="nav-home">Home</a>
+    <a href="puzzle.html" data-nav="puzzle" data-i18n="nav-puzzle">Puzzle</a>
+    <a href="orologio.html" data-nav="clock" data-i18n="nav-clock">Orologi</a>
+  </nav>
+  <div class="site-actions">
+    <button type="button" class="theme-toggle" id="themeToggle"
+            title="Cambia tema chiaro/scuro" aria-label="Cambia tema chiaro/scuro"
+            data-i18n-title="theme-toggle-label" data-i18n-aria="theme-toggle-label">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <div class="lang-pill" data-lang="it" role="group" aria-label="Lingua" data-i18n-aria="lang-label">
+      <button type="button" data-lang="it" class="active" aria-pressed="true">IT</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-body">
+    <span class="badge"><span class="badge-dot"></span><span data-i18n="badge">SVG Generator</span></span>
+    <h1 class="hero-title"><span data-i18n="hero-title-1">Clock Face </span><em data-i18n="hero-title-em">SVG Generator</em></h1>
+    <p class="hero-sub" data-i18n="hero-sub">Crea quadranti d'orologio personalizzati ed esporta ogni livello in SVG.</p>
+    <div class="hero-links">
+      <a class="chip chip-fire" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="chip-offers">Offerte Anycubic</span>
+      </a>
+      <a class="chip chip-maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span data-i18n="chip-maker">Profilo Makeronline</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="tool-header">
+  <h2 data-i18n="tool-h1">Progetta il tuo orologio</h2>
+  <p data-i18n="tool-p">Configura quadrante, indici e lancette. L'anteprima si aggiorna in tempo reale.</p>
+</div>
+
+<main class="workspace">
+
+  <div class="controls">
+
+    <!-- DIAL PANEL -->
+    <details class="panel" open>
+      <summary><span data-i18n="panel-dial">Quadrante</span></summary>
+      <div class="panel-body">
+        <div class="field">
+          <label data-i18n="field-shape">Forma quadrante</label>
+          <div class="mode-toggle">
+            <button type="button" data-shape="circle" class="active" data-i18n="opt-shape-circle">Cerchio</button>
+            <button type="button" data-shape="square" data-i18n="opt-shape-square">Quadrato</button>
+          </div>
+          <input type="radio" name="dialShape" value="circle" checked style="display:none">
+          <input type="radio" name="dialShape" value="square" style="display:none">
+        </div>
+        <div class="field">
+          <label id="diameterLabel" data-i18n="field-diameter">Diametro (mm)</label>
+          <input type="number" class="has-slider" id="diameter" value="200" min="40" max="600" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-dial-stroke">Spessore bordo (mm)</label>
+          <input type="number" class="has-slider" id="dialStroke" value="2" min="0" max="20" step="0.1">
+        </div>
+        <div class="field" id="cornerRadiusField" style="display:none">
+          <label data-i18n="field-corner-radius">Smusso angoli (mm)</label>
+          <input type="number" class="has-slider" id="cornerRadius" value="20" min="0" max="300" step="1">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label data-i18n="field-dial-bg">Colore sfondo</label>
+            <input type="color" id="dialBg" value="#ffffff">
+          </div>
+          <div class="field">
+            <label data-i18n="field-dial-color">Colore bordo/tratti</label>
+            <input type="color" id="dialColor" value="#111111">
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-minute-ticks">Tacche dei minuti</span>
+            <small data-i18n="toggle-minute-ticks-hint">60 tacche lungo il bordo</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="minuteTicks" checked><span class="slider"></span></span>
+        </label>
+        <div class="field">
+          <label data-i18n="field-tick-len">Lunghezza tacche (mm)</label>
+          <input type="number" class="has-slider" id="tickLen" value="3" min="0.5" max="20" step="0.5">
+        </div>
+        <div class="field">
+          <label data-i18n="field-tick-w">Spessore tacche (mm)</label>
+          <input type="number" class="has-slider" id="tickWidth" value="0.6" min="0.1" max="5" step="0.1">
+        </div>
+
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-custom-ticks">Usa immagine personalizzata</span>
+            <small data-i18n="toggle-custom-ticks-hint">Sostituisce la tacca con un file caricato</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="customTicks"><span class="slider"></span></span>
+        </label>
+        <div class="field" id="customTickUploadField" style="display:none">
+          <label data-i18n="btn-upload">Carica file (SVG, PNG, JPG)</label>
+          <input type="file" id="minuteTickFile" accept=".svg,image/svg+xml,image/png,image/jpeg">
+          <div class="upload-preview-row">
+            <img class="upload-preview" id="minuteTickPreview" alt="" hidden>
+            <div class="hint" id="minuteTickFileName"></div>
+          </div>
+          <div class="hint" data-i18n="hint-custom-tick">L'immagine ruota seguendo la posizione lungo il bordo (a differenza degli indici, che restano dritti). Usa la rotazione icona per un aggiustamento fine.</div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-custom-tick-size">Dimensione immagine (mm)</label>
+            <input type="number" class="has-slider" id="customTickSize" value="3" min="0.5" max="30" step="0.5">
+          </div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-icon-rotation">Rotazione icona (°)</label>
+            <input type="number" class="has-slider" id="tickIconRotation" value="0" min="-180" max="180" step="1">
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="field">
+          <label data-i18n="field-center-text">Testo centrale</label>
+          <input type="text" id="centerText" value="" data-i18n-ph="field-center-text-ph" placeholder="es. Ludwing Watch Co.">
+        </div>
+        <div class="field">
+          <label data-i18n="field-center-text-size">Dimensione testo (mm)</label>
+          <input type="number" class="has-slider" id="centerTextSize" value="8" min="2" max="40" step="0.5">
+        </div>
+        <div class="field">
+          <label data-i18n="field-center-text-y">Offset verticale (%)</label>
+          <input type="number" class="has-slider" id="centerTextY" value="30" min="-90" max="90" step="1">
+        </div>
+      </div>
+    </details>
+
+    <!-- INDICES PANEL -->
+    <details class="panel" open>
+      <summary><span data-i18n="panel-indices">Indici delle ore</span></summary>
+      <div class="panel-body">
+        <div class="field" id="indexStyleField">
+          <label data-i18n="field-index-style">Stile</label>
+          <select id="indexStyle">
+            <option value="arabic" data-i18n="opt-idx-arabic">Numeri arabi</option>
+            <option value="roman" data-i18n="opt-idx-roman">Numeri romani</option>
+            <option value="dash" selected data-i18n="opt-idx-dash">Trattino</option>
+            <option value="dot" data-i18n="opt-idx-dot">Pallino</option>
+            <option value="square" data-i18n="opt-idx-square">Quadrato</option>
+            <option value="triangle" data-i18n="opt-idx-triangle">Triangolo</option>
+            <option value="diamond" data-i18n="opt-idx-diamond">Rombo</option>
+            <option value="none" data-i18n="opt-idx-none">Nessuno</option>
+          </select>
+        </div>
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-custom-image">Usa immagine personalizzata</span>
+            <small data-i18n="toggle-custom-image-hint">Sostituisce l'aspetto con un file caricato</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="indexCustomToggle"><span class="slider"></span></span>
+        </label>
+        <div class="field" id="customIndexUploadField" style="display:none">
+          <label data-i18n="btn-upload">Carica file (SVG, PNG, JPG)</label>
+          <input type="file" id="hourIndexFile" accept=".svg,image/svg+xml,image/png,image/jpeg">
+          <div class="upload-preview-row">
+            <img class="upload-preview" id="hourIndexPreview" alt="" hidden>
+            <div class="hint" id="hourIndexFileName"></div>
+          </div>
+          <div class="hint" data-i18n="hint-custom-index">L'immagine resta sempre dritta (non ruota automaticamente).</div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-icon-rotation">Rotazione icona (°)</label>
+            <input type="number" class="has-slider" id="indexIconRotation" value="0" min="-180" max="180" step="1">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label data-i18n="field-index-count">Quantità</label>
+            <select id="indexCount">
+              <option value="12" data-i18n="opt-count-12">12 (tutte le ore)</option>
+              <option value="4" data-i18n="opt-count-4">4 (12-3-6-9)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-i18n="field-index-color">Colore</label>
+            <input type="color" id="indexColor" value="#111111">
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="field-index-size">Dimensione (mm)</label>
+          <input type="number" class="has-slider" id="indexSize" value="10" min="2" max="40" step="0.5">
+        </div>
+        <div class="field">
+          <label data-i18n="field-index-dist">Distanza dal centro (%)</label>
+          <input type="number" class="has-slider" id="indexDistance" value="85" min="30" max="98" step="1">
+        </div>
+
+        <div class="sep"></div>
+
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-trad-four">Stile tradizionale "IIII"</span>
+            <small data-i18n="toggle-trad-four-hint">Usa IIII invece di IV</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="traditionalFour"><span class="slider"></span></span>
+        </label>
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-emphasize">Enfatizza 12-3-6-9</span>
+            <small data-i18n="toggle-emphasize-hint">Indici cardinali più grandi</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="emphasizeCardinal"><span class="slider"></span></span>
+        </label>
+      </div>
+    </details>
+
+    <!-- HANDS PANEL -->
+    <details class="panel" open>
+      <summary><span data-i18n="panel-hands">Lancette</span></summary>
+      <div class="panel-body">
+
+        <div class="section-label" data-i18n="hands-hour">Lancetta ore</div>
+        <div class="field" id="hourShapeField">
+          <label data-i18n="field-hand-shape">Forma</label>
+          <select id="hourShape">
+            <option value="baton" data-i18n="opt-hand-baton">Baguette (lineare)</option>
+            <option value="sword" selected data-i18n="opt-hand-sword">Spada (affusolata)</option>
+            <option value="dauphine" data-i18n="opt-hand-dauphine">Dauphine (a rombo)</option>
+            <option value="breguet" data-i18n="opt-hand-breguet">Breguet (con anello)</option>
+          </select>
+        </div>
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-custom-image">Usa immagine personalizzata</span>
+            <small data-i18n="toggle-custom-image-hint">Sostituisce l'aspetto con un file caricato</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="hourCustomToggle"><span class="slider"></span></span>
+        </label>
+        <div class="field" id="hourCustomUploadField" style="display:none">
+          <label data-i18n="btn-upload">Carica file (SVG, PNG, JPG)</label>
+          <input type="file" id="hourHandFile" accept=".svg,image/svg+xml,image/png,image/jpeg">
+          <div class="upload-preview-row">
+            <img class="upload-preview" id="hourHandPreview" alt="" hidden>
+            <div class="hint" id="hourHandFileName"></div>
+          </div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-icon-rotation">Rotazione icona (°)</label>
+            <input type="number" class="has-slider" id="hourIconRotation" value="0" min="-180" max="180" step="1">
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-length">Lungh. (%)</label>
+          <input type="number" class="has-slider" id="hourLength" value="50" min="10" max="95" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-width">Spessore</label>
+          <input type="number" class="has-slider" id="hourWidth" value="6" min="0.5" max="30" step="0.5">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-tail">Coda (%)</label>
+          <input type="number" class="has-slider" id="hourTail" value="15" min="0" max="50" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-color">Colore</label>
+          <input type="color" id="hourColor" value="#111111">
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="section-label" data-i18n="hands-minute">Lancetta minuti</div>
+        <div class="field" id="minuteShapeField">
+          <label data-i18n="field-hand-shape">Forma</label>
+          <select id="minuteShape">
+            <option value="baton" data-i18n="opt-hand-baton">Baguette (lineare)</option>
+            <option value="sword" selected data-i18n="opt-hand-sword">Spada (affusolata)</option>
+            <option value="dauphine" data-i18n="opt-hand-dauphine">Dauphine (a rombo)</option>
+            <option value="breguet" data-i18n="opt-hand-breguet">Breguet (con anello)</option>
+          </select>
+        </div>
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-custom-image">Usa immagine personalizzata</span>
+            <small data-i18n="toggle-custom-image-hint">Sostituisce l'aspetto con un file caricato</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="minuteCustomToggle"><span class="slider"></span></span>
+        </label>
+        <div class="field" id="minuteCustomUploadField" style="display:none">
+          <label data-i18n="btn-upload">Carica file (SVG, PNG, JPG)</label>
+          <input type="file" id="minuteHandFile" accept=".svg,image/svg+xml,image/png,image/jpeg">
+          <div class="upload-preview-row">
+            <img class="upload-preview" id="minuteHandPreview" alt="" hidden>
+            <div class="hint" id="minuteHandFileName"></div>
+          </div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-icon-rotation">Rotazione icona (°)</label>
+            <input type="number" class="has-slider" id="minuteIconRotation" value="0" min="-180" max="180" step="1">
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-length">Lungh. (%)</label>
+          <input type="number" class="has-slider" id="minuteLength" value="72" min="10" max="98" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-width">Spessore</label>
+          <input type="number" class="has-slider" id="minuteWidth" value="4" min="0.5" max="30" step="0.5">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-tail">Coda (%)</label>
+          <input type="number" class="has-slider" id="minuteTail" value="15" min="0" max="50" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-color">Colore</label>
+          <input type="color" id="minuteColor" value="#111111">
+        </div>
+
+        <div class="sep"></div>
+
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-second-hand">Mostra lancetta dei secondi</span>
+          </div>
+          <span class="switch"><input type="checkbox" id="secondEnabled" checked><span class="slider"></span></span>
+        </label>
+        <div class="section-label" data-i18n="hands-second">Lancetta secondi</div>
+        <div class="field" id="secondShapeField">
+          <label data-i18n="field-hand-shape">Forma</label>
+          <select id="secondShape">
+            <option value="baton" selected data-i18n="opt-hand-baton">Baguette (lineare)</option>
+            <option value="sword" data-i18n="opt-hand-sword">Spada (affusolata)</option>
+            <option value="dauphine" data-i18n="opt-hand-dauphine">Dauphine (a rombo)</option>
+            <option value="breguet" data-i18n="opt-hand-breguet">Breguet (con anello)</option>
+          </select>
+        </div>
+        <label class="toggle-field">
+          <div class="toggle-text">
+            <span data-i18n="toggle-custom-image">Usa immagine personalizzata</span>
+            <small data-i18n="toggle-custom-image-hint">Sostituisce l'aspetto con un file caricato</small>
+          </div>
+          <span class="switch"><input type="checkbox" id="secondCustomToggle"><span class="slider"></span></span>
+        </label>
+        <div class="field" id="secondCustomUploadField" style="display:none">
+          <label data-i18n="btn-upload">Carica file (SVG, PNG, JPG)</label>
+          <input type="file" id="secondHandFile" accept=".svg,image/svg+xml,image/png,image/jpeg">
+          <div class="upload-preview-row">
+            <img class="upload-preview" id="secondHandPreview" alt="" hidden>
+            <div class="hint" id="secondHandFileName"></div>
+          </div>
+          <div class="field" style="margin-top:var(--sp3);margin-bottom:0">
+            <label data-i18n="field-icon-rotation">Rotazione icona (°)</label>
+            <input type="number" class="has-slider" id="secondIconRotation" value="0" min="-180" max="180" step="1">
+          </div>
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-length">Lungh. (%)</label>
+          <input type="number" class="has-slider" id="secondLength" value="82" min="10" max="98" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-width">Spessore</label>
+          <input type="number" class="has-slider" id="secondWidth" value="1.5" min="0.3" max="15" step="0.1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-tail">Coda (%)</label>
+          <input type="number" class="has-slider" id="secondTail" value="25" min="0" max="50" step="1">
+        </div>
+        <div class="field">
+          <label data-i18n="field-hand-color">Colore</label>
+          <input type="color" id="secondColor" value="#e63946">
+        </div>
+      </div>
+    </details>
+
+    <!-- MODE PANEL -->
+    <details class="panel" open>
+      <summary><span data-i18n="panel-mode">Modalità anteprima</span></summary>
+      <div class="panel-body">
+        <div class="mode-toggle">
+          <button type="button" data-mode="static" class="active" data-i18n="mode-static">Statica</button>
+          <button type="button" data-mode="live" data-i18n="mode-live">Live (ora reale)</button>
+        </div>
+        <input type="radio" name="mode" value="static" checked style="display:none">
+        <input type="radio" name="mode" value="live" style="display:none">
+
+        <div class="field" id="staticTimeField">
+          <label data-i18n="field-static-time">Orario da mostrare</label>
+          <div class="row3">
+            <input type="number" id="staticH" value="10" min="0" max="11" step="1" title="Ore">
+            <input type="number" id="staticM" value="10" min="0" max="59" step="1" title="Minuti">
+            <input type="number" id="staticS" value="30" min="0" max="59" step="1" title="Secondi">
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- EXPORT PANEL -->
+    <div class="panel">
+      <div class="section-label" data-i18n="panel-export">Esporta SVG</div>
+      <p class="hint" style="margin-bottom:var(--sp4)" data-i18n="export-hint">Ogni livello viene esportato come file SVG indipendente.</p>
+      <div class="export-panel">
+        <button type="button" class="btn-dl btn-layer" id="btnDlDial">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-dial">Quadrante</span>
+        </button>
+        <button type="button" class="btn-dl btn-layer" id="btnDlIndices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-indices">Indici</span>
+        </button>
+        <button type="button" class="btn-dl btn-layer" id="btnDlHour">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-hour">Lancetta ore</span>
+        </button>
+        <button type="button" class="btn-dl btn-layer" id="btnDlMinute">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-minute">Lancetta minuti</span>
+        </button>
+        <button type="button" class="btn-dl btn-layer" id="btnDlSecond">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-second">Lancetta secondi</span>
+        </button>
+        <button type="button" class="btn-dl btn-dl-all" id="btnDlAll">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+          <span data-i18n="btn-dl-all">Scarica tutti</span> <span id="btnDlAllCount">(5 file)</span>
+        </button>
+        <button type="button" class="btn-dl btn-dl-combined" id="btnDlCombined">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg>
+          <span data-i18n="btn-dl-combined">Tutto in un unico file</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="preview">
+    <div class="preview-card">
+      <div class="preview-topbar">
+        <span class="preview-title" data-i18n="preview-title">Anteprima</span>
+        <div class="preview-dots">
+          <span style="background:#ff5f57"></span>
+          <span style="background:#febc2e"></span>
+          <span style="background:#28c840"></span>
+        </div>
+      </div>
+      <div id="svg-wrapper">
+        <svg id="clockSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="info-bar" id="info-bar-text"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>
+    <span data-i18n="footer-by">Creato da</span>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">Ludwing</a>
+    — <span data-i18n="footer-role">Maker · Anycubic Insider</span>
+  </p>
+  <nav>
+    <a href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener" data-i18n="footer-offers">Offerte Anycubic</a>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener" data-i18n="footer-maker">Profilo Makeronline</a>
+    <a href="https://paypal.me/Lucchior" target="_blank" rel="noopener" data-i18n="footer-coffee">Offrimi un caffè</a>
+    <a href="https://github.com/lucchior/Puzzle_Generator" target="_blank" rel="noopener" data-i18n="footer-source">Codice sorgente</a>
+  </nav>
+  <div class="footer-meta">
+    <span>© <span id="footer-year">2026</span> Ludwing · <a href="https://github.com/lucchior/Puzzle_Generator/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer-license">Licenza MIT</a></span>
+    <span id="visit-counter"></span>
+  </div>
+</footer>
+
+<!-- JSZip serve solo al pulsante "Scarica tutti": è caricato in modo
+     asincrono e non blocca nulla. Se il CDN non risponde, l'export torna
+     automaticamente ai download singoli (vedi js/clock/export.js). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+
+<script src="js/clock/i18n.js"></script>
+<script src="js/clock/utils.js"></script>
+<script src="js/clock/dial.js"></script>
+<script src="js/clock/indices.js"></script>
+<script src="js/clock/hands.js"></script>
+<script src="js/clock/render.js"></script>
+<script src="js/clock/export.js"></script>
+<script src="js/clock/sliders.js"></script>
+<script src="js/clock/main.js"></script>
+</body>
+</html>

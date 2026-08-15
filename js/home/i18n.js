@@ -1,0 +1,52 @@
+// js/home/i18n.js
+// Dizionario IT/EN della pagina iniziale (scelta del tool).
+window.LSI18n.register({
+  it: {
+    "home-badge": "Strumenti SVG per maker",
+    "home-title-1": "Due generatori, ",
+    "home-title-em": "un solo posto",
+    "home-sub": "Puzzle e quadranti d'orologio in SVG, pronti per taglio laser e stampa 3D. Tutto gira nel tuo browser: nessun account, nessun caricamento su server.",
+    "home-choose": "Scegli lo strumento",
+    "card-puzzle-title": "Generatore di puzzle",
+    "card-puzzle-desc": "Griglie di puzzle con linguette realistiche generate da seed: dimensioni in millimetri reali, margine opzionale e anteprima con la tua foto di riferimento.",
+    "card-puzzle-t1": "Linguette casuali riproducibili",
+    "card-puzzle-t2": "Bordo pieno per slicer 3D",
+    "card-puzzle-t3": "Export SVG singolo",
+    "card-clock-title": "Generatore di quadranti",
+    "card-clock-desc": "Quadranti tondi o quadrati con indici, tacche dei minuti e tre lancette configurabili. Ogni livello si esporta separatamente, o tutto insieme in un unico file.",
+    "card-clock-t1": "Indici arabi, romani o custom",
+    "card-clock-t2": "Anteprima con ora reale",
+    "card-clock-t3": "Export per livelli o in ZIP",
+    "card-open": "Apri lo strumento",
+    "note-1-title": "Tutto in locale",
+    "note-1-body": "Nessun file lascia il tuo computer: la generazione avviene interamente nel browser.",
+    "note-2-title": "Millimetri veri",
+    "note-2-body": "Gli SVG escono già dimensionati in mm, pronti per LightBurn, RDWorks o uno slicer.",
+    "note-3-title": "Open source",
+    "note-3-body": "Codice sotto licenza MIT: puoi leggerlo, modificarlo e riusarlo liberamente."
+  },
+  en: {
+    "home-badge": "SVG tools for makers",
+    "home-title-1": "Two generators, ",
+    "home-title-em": "one place",
+    "home-sub": "Puzzles and clock faces as SVG, ready for laser cutting and 3D printing. Everything runs in your browser: no account, nothing uploaded to a server.",
+    "home-choose": "Pick a tool",
+    "card-puzzle-title": "Puzzle generator",
+    "card-puzzle-desc": "Puzzle grids with realistic seed-based tabs: real millimetre dimensions, optional margin and a preview using your own reference photo.",
+    "card-puzzle-t1": "Reproducible random tabs",
+    "card-puzzle-t2": "Solid border for 3D slicers",
+    "card-puzzle-t3": "Single SVG export",
+    "card-clock-title": "Clock face generator",
+    "card-clock-desc": "Round or square dials with hour indices, minute ticks and three configurable hands. Export each layer on its own, or everything in one file.",
+    "card-clock-t1": "Arabic, Roman or custom indices",
+    "card-clock-t2": "Live time preview",
+    "card-clock-t3": "Per-layer or ZIP export",
+    "card-open": "Open the tool",
+    "note-1-title": "Fully local",
+    "note-1-body": "No file ever leaves your computer: generation happens entirely in the browser.",
+    "note-2-title": "Real millimetres",
+    "note-2-body": "Exported SVGs are already sized in mm, ready for LightBurn, RDWorks or a slicer.",
+    "note-3-title": "Open source",
+    "note-3-body": "MIT-licensed code: read it, change it and reuse it freely."
+  }
+});

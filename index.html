@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ludwing SVG Tools — Generatori SVG per taglio laser e stampa 3D</title>
+<meta name="description" content="Due generatori SVG gratuiti che girano interamente nel browser: griglie di puzzle e quadranti d'orologio, pronti per taglio laser e stampa 3D."/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c6ee6'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2'/%3E%3Cpath d='M16 11v5l3.5 2' stroke='white' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Sora:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/home.css">
+<!-- Caricati nell'<head> e in modo sincrono: il tema salvato dev'essere
+     applicato prima del primo paint, altrimenti si vede un lampo scuro. -->
+<script src="js/shared/i18n.js"></script>
+<script src="js/shared/site.js"></script>
+</head>
+<body data-page="home">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-logo" data-fallback-hide>
+      <img src="https://i.postimg.cc/FFW3sjLV/Logo.png" alt="" width="34" height="34"/>
+    </span>
+    <span class="brand-text">Ludwing <em>SVG Tools</em></span>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html" data-nav="home" data-i18n="nav-home">Home</a>
+    <a href="puzzle.html" data-nav="puzzle" data-i18n="nav-puzzle">Puzzle</a>
+    <a href="orologio.html" data-nav="clock" data-i18n="nav-clock">Orologi</a>
+  </nav>
+  <div class="site-actions">
+    <button type="button" class="theme-toggle" id="themeToggle"
+            title="Cambia tema chiaro/scuro" aria-label="Cambia tema chiaro/scuro"
+            data-i18n-title="theme-toggle-label" data-i18n-aria="theme-toggle-label">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <div class="lang-pill" data-lang="it" role="group" aria-label="Lingua" data-i18n-aria="lang-label">
+      <button type="button" data-lang="it" class="active" aria-pressed="true">IT</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-body">
+    <span class="badge"><span class="badge-dot"></span><span data-i18n="home-badge">Strumenti SVG per maker</span></span>
+    <h1 class="hero-title"><span data-i18n="home-title-1">Due generatori, </span><em data-i18n="home-title-em">un solo posto</em></h1>
+    <p class="hero-sub" data-i18n="home-sub">Puzzle e quadranti d'orologio in SVG, pronti per taglio laser e stampa 3D. Tutto gira nel tuo browser: nessun account, nessun caricamento su server.</p>
+    <div class="hero-links">
+      <a class="chip chip-fire" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="chip-offers">Offerte Anycubic</span>
+      </a>
+      <a class="chip chip-maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span data-i18n="chip-maker">Profilo Makeronline</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="tool-header">
+  <h2 data-i18n="home-choose">Scegli lo strumento</h2>
+</div>
+
+<main class="tool-grid">
+
+  <a class="tool-card" href="puzzle.html">
+    <div class="tool-art" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="10" y="14" width="80" height="72" rx="6"/>
+        <path d="M10 50h23a7 7 0 0 1 14 0h43"/>
+        <path d="M50 14v46a7 7 0 0 0 0 14v12"/>
+      </svg>
+    </div>
+    <h2 data-i18n="card-puzzle-title">Generatore di puzzle</h2>
+    <p data-i18n="card-puzzle-desc">Griglie di puzzle con linguette realistiche generate da seed: dimensioni in millimetri reali, margine opzionale e anteprima con la tua foto di riferimento.</p>
+    <div class="tool-tags">
+      <span data-i18n="card-puzzle-t1">Linguette casuali riproducibili</span>
+      <span data-i18n="card-puzzle-t2">Bordo pieno per slicer 3D</span>
+      <span data-i18n="card-puzzle-t3">Export SVG singolo</span>
+    </div>
+    <span class="tool-cta">
+      <span data-i18n="card-open">Apri lo strumento</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+  </a>
+
+  <a class="tool-card" href="orologio.html">
+    <div class="tool-art" aria-hidden="true">
+      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="50" cy="50" r="38"/>
+        <path d="M50 16v6M84 50h-6M50 84v-6M16 50h6M74 26l-4 4M74 74l-4-4M26 74l4-4M26 26l4 4"/>
+        <path d="M50 50V30M50 50l16 10"/>
+        <circle cx="50" cy="50" r="3.2" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+    <h2 data-i18n="card-clock-title">Generatore di quadranti</h2>
+    <p data-i18n="card-clock-desc">Quadranti tondi o quadrati con indici, tacche dei minuti e tre lancette configurabili. Ogni livello si esporta separatamente, o tutto insieme in un unico file.</p>
+    <div class="tool-tags">
+      <span data-i18n="card-clock-t1">Indici arabi, romani o custom</span>
+      <span data-i18n="card-clock-t2">Anteprima con ora reale</span>
+      <span data-i18n="card-clock-t3">Export per livelli o in ZIP</span>
+    </div>
+    <span class="tool-cta">
+      <span data-i18n="card-open">Apri lo strumento</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+  </a>
+
+</main>
+
+<section class="home-notes">
+  <div class="home-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v5c0 5-3.4 8.4-8 9-4.6-.6-8-4-8-9V7z"/></svg>
+    <div><strong data-i18n="note-1-title">Tutto in locale</strong><span data-i18n="note-1-body">Nessun file lascia il tuo computer: la generazione avviene interamente nel browser.</span></div>
+  </div>
+  <div class="home-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v8H3z"/><path d="M7 8v4M11 8v6M15 8v4M19 8v6"/></svg>
+    <div><strong data-i18n="note-2-title">Millimetri veri</strong><span data-i18n="note-2-body">Gli SVG escono già dimensionati in mm, pronti per LightBurn, RDWorks o uno slicer.</span></div>
+  </div>
+  <div class="home-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6-6 6-6M15 6l6 6-6 6"/></svg>
+    <div><strong data-i18n="note-3-title">Open source</strong><span data-i18n="note-3-body">Codice sotto licenza MIT: puoi leggerlo, modificarlo e riusarlo liberamente.</span></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p>
+    <span data-i18n="footer-by">Creato da</span>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">Ludwing</a>
+    — <span data-i18n="footer-role">Maker · Anycubic Insider</span>
+  </p>
+  <nav>
+    <a href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener" data-i18n="footer-offers">Offerte Anycubic</a>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener" data-i18n="footer-maker">Profilo Makeronline</a>
+    <a href="https://paypal.me/Lucchior" target="_blank" rel="noopener" data-i18n="footer-coffee">Offrimi un caffè</a>
+    <a href="https://github.com/lucchior/Puzzle_Generator" target="_blank" rel="noopener" data-i18n="footer-source">Codice sorgente</a>
+  </nav>
+  <div class="footer-meta">
+    <span>© <span id="footer-year">2026</span> Ludwing · <a href="https://github.com/lucchior/Puzzle_Generator/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer-license">Licenza MIT</a></span>
+    <span id="visit-counter"></span>
+  </div>
+</footer>
+
+<script src="js/home/i18n.js"></script>
+</body>
+</html>

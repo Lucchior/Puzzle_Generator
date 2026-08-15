@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Generatore di puzzle SVG — Ludwing SVG Tools</title>
+<meta name="description" content="Genera griglie di puzzle in SVG con linguette realistiche, dimensioni in millimetri e bordo pieno per slicer 3D. Gratis e interamente nel browser."/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%237c6ee6'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2'/%3E%3Cpath d='M16 11v5l3.5 2' stroke='white' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Sora:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/puzzle.css">
+<script src="js/shared/i18n.js"></script>
+<script src="js/shared/site.js"></script>
+</head>
+<body data-page="puzzle">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-logo" data-fallback-hide>
+      <img src="https://i.postimg.cc/FFW3sjLV/Logo.png" alt="" width="34" height="34"/>
+    </span>
+    <span class="brand-text">Ludwing <em>SVG Tools</em></span>
+  </a>
+  <nav class="site-nav">
+    <a href="index.html" data-nav="home" data-i18n="nav-home">Home</a>
+    <a href="puzzle.html" data-nav="puzzle" data-i18n="nav-puzzle">Puzzle</a>
+    <a href="orologio.html" data-nav="clock" data-i18n="nav-clock">Orologi</a>
+  </nav>
+  <div class="site-actions">
+    <button type="button" class="theme-toggle" id="themeToggle"
+            title="Cambia tema chiaro/scuro" aria-label="Cambia tema chiaro/scuro"
+            data-i18n-title="theme-toggle-label" data-i18n-aria="theme-toggle-label">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <div class="lang-pill" data-lang="it" role="group" aria-label="Lingua" data-i18n-aria="lang-label">
+      <button type="button" data-lang="it" class="active" aria-pressed="true">IT</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-body">
+    <span class="badge"><span class="badge-dot"></span>Puzzle SVG</span>
+    <h1 class="hero-title">Ludwing <em>Puzzle</em> Generator</h1>
+    <p class="hero-sub" data-i18n="hero-sub">Tool gratuito per creare file SVG di puzzle con linguette realistiche — taglio laser &amp; stampa 3D ready.</p>
+    <div class="hero-links">
+      <a class="chip chip-fire" href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span data-i18n="chip-offers">Offerte Anycubic</span>
+      </a>
+      <a class="chip chip-maker" href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span data-i18n="chip-maker">Profilo Makeronline</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="tool-header">
+  <h2 data-i18n="tool-title">Puzzle Line Generator</h2>
+  <p data-i18n="tool-sub">Configura la griglia, visualizza l'anteprima e scarica l'SVG pronto per il taglio</p>
+</div>
+
+<main class="workspace">
+  <aside class="panel panel-puzzle">
+    <p class="section-label" data-i18n="sec-photo">Foto di riferimento</p>
+    <div class="field">
+      <label for="photoInput" data-i18n="lbl-photo">Carica una foto (JPG/PNG)</label>
+      <input type="file" id="photoInput" accept="image/png,image/jpeg" aria-describedby="photo-error photo-disclaimer"/>
+      <div class="field-error" id="photo-error" role="alert"></div>
+    </div>
+    <div class="field" id="photoFitField" hidden>
+      <label for="photoFit" data-i18n="lbl-photo-fit">Adattamento immagine</label>
+      <select id="photoFit">
+        <option value="cover" data-i18n="opt-fit-cover">Riempi tutta l'area (ritaglia)</option>
+        <option value="contain" data-i18n="opt-fit-contain">Adatta senza ritagliare</option>
+      </select>
+    </div>
+    <button class="btn-ghost" id="btn-remove-photo" type="button" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 6 6 18M6 6l12 12"/>
+      </svg>
+      <span data-i18n="btn-remove-photo">Rimuovi foto</span>
+    </button>
+    <div class="disclaimer" id="photo-disclaimer" data-i18n="disclaimer-photo">
+      Questa immagine serve solo come anteprima visiva, mostrata localmente nel tuo browser: non viene mai caricata su alcun server e non fa parte del file SVG esportato (che contiene solo le linee di taglio). Si ritaglia automaticamente per riempire l'area del puzzle e non viene salvata da nessuna parte — ricaricando la pagina andrà persa. Carica solo immagini di cui hai i diritti d'uso.
+    </div>
+
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-dimensions">Dimensioni</p>
+    <div class="field">
+      <label for="width" data-i18n="lbl-width">Larghezza (mm)</label>
+      <input type="number" id="width" value="300" min="10" max="2000" step="1" aria-describedby="width-error"/>
+      <div class="field-error" id="width-error" role="alert"></div>
+    </div>
+    <div class="field">
+      <label for="height" data-i18n="lbl-height">Altezza (mm)</label>
+      <input type="number" id="height" value="200" min="10" max="2000" step="1" aria-describedby="height-error"/>
+      <div class="field-error" id="height-error" role="alert"></div>
+    </div>
+    <div class="field">
+      <label for="radius" data-i18n="lbl-radius">Raggio angoli (mm)</label>
+      <input type="number" id="radius" value="2" min="0" max="20" step="0.5" aria-describedby="radius-error"/>
+      <div class="field-error" id="radius-error" role="alert"></div>
+    </div>
+
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-border">Bordo esterno</p>
+    <div class="field">
+      <label for="margin" data-i18n="lbl-margin">Margine (mm)</label>
+      <input type="number" id="margin" value="5" min="0" max="100" step="0.5" aria-describedby="hint-margin-text margin-error"/>
+      <div class="hint" id="hint-margin-text" data-i18n="hint-margin">Spazio uniforme attorno alla griglia</div>
+      <div class="field-error" id="margin-error" role="alert"></div>
+    </div>
+    <label class="toggle-field" for="solidBorder">
+      <div class="toggle-text">
+        <span data-i18n="toggle-solid">Bordo pieno nero</span>
+        <small id="border-hint" data-i18n="toggle-solid-hint">Per stampa 3D — fill solido</small>
+      </div>
+      <span class="switch">
+        <input type="checkbox" id="solidBorder"/>
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-grid">Griglia</p>
+    <div class="field">
+      <label for="xn" data-i18n="lbl-cols">Colonne</label>
+      <input type="number" id="xn" value="10" min="2" max="100" step="1" aria-describedby="xn-error"/>
+      <div class="field-error" id="xn-error" role="alert"></div>
+    </div>
+    <div class="field">
+      <label for="yn" data-i18n="lbl-rows">Righe</label>
+      <input type="number" id="yn" value="7" min="2" max="100" step="1" aria-describedby="yn-error"/>
+      <div class="field-error" id="yn-error" role="alert"></div>
+    </div>
+
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-tabs">Linguette</p>
+    <div class="field">
+      <label for="_seed" data-i18n="lbl-seed">Seed — forma casuale</label>
+      <div class="input-row">
+        <input type="number" id="_seed" value="42" min="0" max="9999" step="1"/>
+        <input type="range" id="seed" class="field-range" value="42" min="0" max="9999" step="1" aria-label="Seed"/>
+      </div>
+    </div>
+    <div class="field">
+      <label for="_tabsize" data-i18n="lbl-tabsize">Dimensione linguetta</label>
+      <div class="input-row">
+        <input type="number" id="_tabsize" value="20" min="10" max="30" step="0.1"/>
+        <input type="range" id="tabsize" class="field-range" value="20" min="10" max="30" step="0.1" aria-label="Tab size"/>
+      </div>
+      <div class="hint" data-i18n="hint-tabsize">% — consigliato 15–25%</div>
+    </div>
+    <div class="field">
+      <label for="_jitter" data-i18n="lbl-jitter">Irregolarità (jitter)</label>
+      <div class="input-row">
+        <input type="number" id="_jitter" value="4" min="0" max="13" step="0.1"/>
+        <input type="range" id="jitter" class="field-range" value="4" min="0" max="13" step="0.1" aria-label="Jitter"/>
+      </div>
+      <div class="hint" data-i18n="hint-jitter">0 = simmetrico · 13 = organico</div>
+    </div>
+
+    <div class="sep"></div>
+    <p class="section-label" data-i18n="sec-export">Esporta</p>
+    <div class="field">
+      <label for="strokeWidth" data-i18n="lbl-stroke">Spessore linea SVG (mm)</label>
+      <input type="number" id="strokeWidth" value="0.1" min="0.01" max="5" step="0.05" aria-describedby="hint-stroke-text strokeWidth-error"/>
+      <div class="hint" id="hint-stroke-text" data-i18n="hint-stroke">0.1 mm — ottimale per laser</div>
+      <div class="field-error" id="strokeWidth-error" role="alert"></div>
+    </div>
+    <button class="btn-dl" type="button" id="btn-download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M12 3v13M5 16l7 7 7-7"/><path d="M3 21h18"/>
+      </svg>
+      <span data-i18n="btn-download">Scarica SVG</span>
+    </button>
+    <button class="btn-ghost" type="button" id="btn-reset" style="margin-top:var(--sp3)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>
+      </svg>
+      <span data-i18n="btn-reset">Ripristina valori predefiniti</span>
+    </button>
+  </aside>
+
+  <section class="preview">
+    <div class="preview-card">
+      <div class="preview-topbar">
+        <span class="preview-title" data-i18n="preview-title">Anteprima live</span>
+        <div class="preview-dots">
+          <span style="background:#ef4444;opacity:.7"></span>
+          <span style="background:#f59e0b;opacity:.7"></span>
+          <span style="background:#22c55e;opacity:.7"></span>
+        </div>
+      </div>
+      <div id="svg-wrapper">
+        <svg id="puzzlecontainer" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <image id="puzzlephoto" href="" preserveAspectRatio="xMidYMid slice"></image>
+          <path id="puzzlepath_margin_solid"></path>
+          <path id="puzzlepath_h" fill="none" stroke="#3b82f6" stroke-width="0.1"></path>
+          <path id="puzzlepath_v" fill="none" stroke="#ef4444" stroke-width="0.1"></path>
+          <path id="puzzlepath_b" fill="none" stroke="#111" stroke-width="0.1"></path>
+          <path id="puzzlepath_margin" fill="none" stroke="#6366f1" stroke-width="0.1" stroke-dasharray="6 3"></path>
+        </svg>
+      </div>
+      <div class="meta-bar">
+        <div class="legend">
+          <div class="legend-item"><div class="legend-line" style="background:#3b82f6"></div><span data-i18n="leg-h">orizzontali</span></div>
+          <div class="legend-item"><div class="legend-line" style="background:#ef4444"></div><span data-i18n="leg-v">verticali</span></div>
+          <div class="legend-item"><div class="legend-line" style="background:#111;border:1px solid #aaa"></div><span data-i18n="leg-b">bordo puzzle</span></div>
+          <div class="legend-item"><div class="legend-dash"></div><span data-i18n="leg-m">margine</span></div>
+        </div>
+        <div class="info-pill" id="info-bar" aria-live="polite">—</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>
+    <span data-i18n="footer-by">Creato da</span>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener">Ludwing</a>
+    — <span data-i18n="footer-role">Maker · Anycubic Insider</span>
+  </p>
+  <nav>
+    <a href="https://lucchior.github.io/Anycubic_offerte/" target="_blank" rel="noopener" data-i18n="footer-offers">Offerte Anycubic</a>
+    <a href="https://www.makeronline.com/en/user/personalInfo/c302cd8c-3538-4ba1-b329-09ef4cabfb5d.html?trackUserType=1" target="_blank" rel="noopener" data-i18n="footer-maker">Profilo Makeronline</a>
+    <a href="https://paypal.me/Lucchior" target="_blank" rel="noopener" data-i18n="footer-coffee">Offrimi un caffè</a>
+    <a href="https://github.com/lucchior/Puzzle_Generator" target="_blank" rel="noopener" data-i18n="footer-source">Codice sorgente</a>
+  </nav>
+  <div class="footer-meta">
+    <span>© <span id="footer-year">2026</span> Ludwing · <a href="https://github.com/lucchior/Puzzle_Generator/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer-license">Licenza MIT</a></span>
+    <span id="visit-counter"></span>
+  </div>
+</footer>
+
+<script src="js/puzzle/random.js"></script>
+<script src="js/puzzle/geometry.js"></script>
+<script src="js/puzzle/i18n.js"></script>
+<script src="js/puzzle/app.js"></script>
+</body>
+</html>
